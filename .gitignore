@@ -1,3 +1,11 @@
+# Created by Gou
+
+### Backend Ops ###
+# secret config
+config/config.json
+
+# End of Backend
+
 
 # Created by https://www.gitignore.io/api/node,windows,webstorm
 # Edit at https://www.gitignore.io/?templates=node,windows,webstorm
