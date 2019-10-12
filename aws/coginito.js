@@ -3,8 +3,8 @@
  */
 const Sync = require('sync');
 const config = require('./config').cognito;
-const utils = require('./../utils/utils');
-utils.identify("config", config);
+//const utils = require('./../utils/utils');
+
 /**
  * cognito client config
  * see https://www.npmjs.com/package/amazon-cognito-identity-js for docs
@@ -75,13 +75,8 @@ function GetAllAttribute(cognitoUser, onSuccessCallback, onFailureCallback) {
     });
 }
 
-module.exports.GetUserRole = function (cognitoUser, onSuccessCallback, onFailureCallback) {
-    Sync(GetAllAttribute(cognitoUser,
-        function (attribute_list) {
-            onSuccessCallback(attribute_list['custom:role']);
-        },
-        onFailureCallback
-    ));
+module.exports.GetUserAttributes = function (cognitoUser, onSuccessCallback, onFailureCallback) {
+    Sync(GetAllAttribute(cognitoUser, onSuccessCallback, onFailureCallback));
 };
 module.exports.LoginUser = function (login_form, onSuccessCallback, onFailureCallback) {
     const authenticationData = {

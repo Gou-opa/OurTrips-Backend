@@ -1,8 +1,10 @@
 const cognito = require('./../aws/coginito');
 const utils = require('./../utils/utils');
-
+const jwt = require('jsonwebtoken');
+const config = require('./../config/config');
+const SesionManager = require('./../mysql/session');
 module.exports.RegisterUser = (form, req, res) => {
-    cognito.RegisterUser(req, res, form,
+    cognito.RegisterUser(form,
         function (result) {
             let cognitoUser = result.user;
             console.log('user name is', cognitoUser.getUsername());
@@ -14,7 +16,7 @@ module.exports.RegisterUser = (form, req, res) => {
                 res.json({"status": 404, "Error": "Exsist"})
             } else {
                 utils.identify("Signup error", [regist_form, err]);
-                res.json({"status": 500, "Error": "Unknown"})
+                res.json({"status": 500, "Error": err.message})
             }
         }
     );
@@ -36,20 +38,36 @@ module.exports.LoginUser = (login_form, req, res) => {
     cognito.LoginUser(login_form,
         function (credential, cognitoUser) {
             utils.identify("credential", credential);
-            cognito.GetUserRole(cognitoUser,
-                function (role) {
-                    res.json({"status": 200, "Role": role})
+            utils.identify("secret", config.secret);
+            cognito.GetUserAttributes(cognitoUser,
+                function (userAttributeList) {
+                    utils.identify("user", userAttributeList);
+                    const token = jwt.sign({"sub": userAttributeList['sub']}, config.secret); // sub == user id in cognito
+                    SesionManager.store(
+                        {user: userAttributeList['sub'], "token": token, "info": "device info put in here later"},
+                        function (result) {
+                            res.json({
+                                "status": 200,
+                                "Role": userAttributeList['custom:role'],
+                                "user_info": userAttributeList,
+                                "token": token
+                            });
+                        },
+                        function (err) {
+                            res.json({"status": 500, "Error": err.message});
+                        }
+                    );
                 },
                 function (err) {
                     utils.identify("Retrieve role error", [login_form, err]);
-                    res.json({"status": 500, "Error": "Retrieve role failed"});
+                    res.json({"status": 500, "Error": err.message});
                 }
             );
         },
         function (err) {
             utils.identify("Login error", [login_form, err]);
             if (err.message === 'Incorrect username or password.') res.json({"status": 401, "Error": err.message});
-            else res.json({"status": 500, "Error": "Unknown"});
+            else res.json({"status": 500, "Error": err.message});
         }
     )
 };

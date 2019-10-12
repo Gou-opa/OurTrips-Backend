@@ -3,5 +3,6 @@
  */
 const config = require('./../config/config').aws;
 module.exports = {
-    "cognito": config.cognito
+    "cognito": config.cognito,
+    "dynamodb": config.dynamodb
 };
