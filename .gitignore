@@ -3,7 +3,7 @@
 ### Backend Ops ###
 # secret config
 config/config.json
-
+config/server_secret.json
 # End of Backend
 
 

@@ -1,8 +1,65 @@
 const cognito = require('./../aws/coginito');
 const utils = require('./../utils/utils');
-const jwt = require('jsonwebtoken');
-const config = require('./../config/config');
-const SesionManager = require('./../mysql/session');
+const jwt = require('./../user/jwt');
+const SessionManager = require('./../mysql/session');
+
+module.exports.Verify = function (form, req, res) {
+    jwt.check(
+        {
+            "username": form.username,
+            "token" : form.token
+        },
+        function (user_info) {
+            let {username, info} = user_info;
+            let action_permission;
+            utils.identify('read user info', info);
+            utils.identify('requred role', form.role);
+            if (info['custom:role'] == form.role) action_permission = true;
+            else action_permission = false;
+            res.json({"status": "authenticated", "action_permission" : action_permission});
+        },
+        function (err) {
+            utils.identify("token verify failed", err);
+            res.json({"status": err.message});
+        },
+        function () {
+            res.json({"status": "token expired"});
+        },
+        function () {
+            res.json({"status": "logged out"});
+        }
+    );
+};
+
+module.exports.LogOut = function (form, req, res) {
+    function logout(user_info) {
+        utils.identify('logging out user', form.username);
+        SessionManager.logout(form.token,
+            function () {
+                res.json({"status": "logged out"});
+            },
+            function (err) {
+                utils.identify("update logout status failed", err);
+                res.json({"status": "logging out failed at db"});
+            }
+        );
+    }
+    jwt.check(
+        {
+            "username": form.username,
+            "token" : form.token
+        },
+        logout,
+        function (err) {
+            utils.identify("token verify failed", err);
+            res.json({"status": "verify token failed"});
+        },
+        logout,
+        function () {
+            res.json({"status": "logged out before"});
+        }
+    );
+};
 module.exports.RegisterUser = (form, req, res) => {
     cognito.RegisterUser(form,
         function (result) {
@@ -38,25 +95,36 @@ module.exports.LoginUser = (login_form, req, res) => {
     cognito.LoginUser(login_form,
         function (credential, cognitoUser) {
             utils.identify("credential", credential);
-            utils.identify("secret", config.secret);
+            //utils.identify("secret", config.secret);
             cognito.GetUserAttributes(cognitoUser,
                 function (userAttributeList) {
                     utils.identify("user", userAttributeList);
-                    const token = jwt.sign({"sub": userAttributeList['sub']}, config.secret); // sub == user id in cognito
-                    SesionManager.store(
-                        {user: userAttributeList['sub'], "token": token, "info": "device info put in here later"},
-                        function (result) {
-                            res.json({
-                                "status": 200,
-                                "Role": userAttributeList['custom:role'],
-                                "user_info": userAttributeList,
-                                "token": token
-                            });
+                    jwt.create(
+                        {
+                        "username":login_form.username,
+                        "info":userAttributeList
                         },
-                        function (err) {
-                            res.json({"status": 500, "Error": err.message});
-                        }
-                    );
+                        function (token) {
+                        SessionManager.store( // luu vao db session
+                            {
+                                "username": login_form.username,
+                                "login_at": new Date(),
+                                "token": token,
+                                "info": "device info put in here later",
+                                "logged_out": 0
+                            },
+                            function (result) {
+                                res.json({
+                                    "status": 200,
+                                    "Role": userAttributeList['custom:role'],
+                                    "token": token
+                                });
+                            },
+                            function (err) {
+                                res.json({"status": 500, "Error": err.message});
+                            }
+                        );
+                    });
                 },
                 function (err) {
                     utils.identify("Retrieve role error", [login_form, err]);
