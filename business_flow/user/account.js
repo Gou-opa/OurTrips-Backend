@@ -3,32 +3,14 @@ const utils = require('../../utils/utils');
 const jwt = require('./jwt');
 const SessionManager = require('../../core/mysql/session');
 
-module.exports.Verify = function (form, req, res) {
-    jwt.check(
-        {
-            "username": form.username,
-            "token" : form.token
-        },
-        function (user_info) {
-            let {username, info} = user_info;
-            let action_permission;
-            utils.identify('read user info', info);
-            utils.identify('requred role', form.role);
-            if (info['custom:role'] == form.role) action_permission = true;
-            else action_permission = false;
-            res.json({"status": "authenticated", "action_permission" : action_permission});
-        },
-        function (err) {
-            utils.identify("token verify failed", err);
-            res.json({"status": err.message});
-        },
-        function () {
-            res.json({"status": "token expired"});
-        },
-        function () {
-            res.json({"status": "logged out"});
-        }
-    );
+module.exports.Verify = function (user_info, req, res) {
+    var form = req.body;
+    let action_permission;
+    utils.identify('retrieved user pack', user_info);
+    utils.identify('requred role', form.role);
+    if (user_info['info']['custom:role'] == form.role) action_permission = true;
+    else action_permission = false;
+    res.json({"status": "authenticated", "action_permission" : action_permission});
 };
 module.exports.Authen = function (form, onSuccessCallback, onErrorCallback, onExpireCallback, onLoggedOutCallback) {
     jwt.check(
@@ -42,32 +24,79 @@ module.exports.Authen = function (form, onSuccessCallback, onErrorCallback, onEx
         onLoggedOutCallback //0 param
     );
 };
-module.exports.LogOut = function (form, req, res) {
-    function logout(user_info) {
-        utils.identify('logging out user', form.username);
-        SessionManager.logout(form.token,
-            function () {
-                res.json({"status": "logged out"});
-            },
-            function (err) {
-                utils.identify("update logout status failed", err);
-                res.json({"status": "logging out failed at db"});
-            }
-        );
-    }
-    jwt.check(
+
+
+const Authen2 = function (form, onSuccessCallback, onErrorCallback, onExpireCallback, onLoggedOutCallback) {
+    jwt.checkConnection(
         {
-            "username": form.username,
-            "token" : form.token
+            "username": form.req.body.username,
+            "token" : form.req.body.token,
+            "req": form.req,
+            "res": form.res
         },
-        logout,
+        onSuccessCallback, //parram user_info
+        onErrorCallback, //parram err
+        onExpireCallback, //0 param
+        onLoggedOutCallback //0 param
+    );
+};
+module.exports.AuthenThen = function(action, req, res){
+    /*
+    params: action: function (user_info object, req, res) { ... }
+        use to launch action with user info and authenticated
+        all infomation reserved in req so there is no need to pass any other input into action's params
+        define extraction of req later in action definition
+     */
+    Authen2(
+        {req: req, res: res},
+        action,
         function (err) {
-            utils.identify("token verify failed", err);
-            res.json({"status": "verify token failed"});
+            res.json({"status": 500, "Error": err.message});
         },
-        logout,
         function () {
-            res.json({"status": "logged out before"});
+            res.json({"status": 401, "Error": "Token expired"});
+        },
+        function () {
+            res.json({"status": 401, "Error": "User logged out"});
+        }
+    );
+};
+module.exports.AuthenRoleThen = function(action, role, req, res){
+    /*
+    params: action: function (user_info_object, req, res) { ... }
+        use to launch action with user info and authenticated
+        all infomation reserved in req so there is no need to pass any other input into action's params
+        define extraction of req later in action definition
+     */
+    Authen2(
+        {req: req, res: res},
+        function (user_infopack, req, res){
+            if(user_infopack['info']['custom:role'] == role) action(user_infopack, req, res);
+            else {
+                res.json({"status": 403, "Error": "Not authorized as " + role});
+            }
+        },
+        function (err) {
+            res.json({"status": 500, "Error": err.message});
+        },
+        function () {
+            res.json({"status": 401, "Error": "Token expired"});
+        },
+        function () {
+            res.json({"status": 401, "Error": "User logged out"});
+        }
+    );
+};
+module.exports.LogOut = function (user, req, res) {
+    var form = req.body;
+    utils.identify('logging out user', form.username);
+    SessionManager.logout(form.token,
+        function () {
+            res.json({"status": "logged out success"});
+        },
+        function (err) {
+            utils.identify("update logout status failed", err);
+            res.json({"status": "logging out failed at db"});
         }
     );
 };
@@ -80,10 +109,10 @@ module.exports.RegisterUser = (form, req, res) => {
         },
         function (err) {
             if (err.message === "User already exists") {
-                utils.identify("User exsisted", regist_form);
+                utils.identify("User exsisted", form);
                 res.json({"status": 404, "Error": "Exsist"})
             } else {
-                utils.identify("Signup error", [regist_form, err]);
+                utils.identify("Signup error", [form, err]);
                 res.json({"status": 500, "Error": err.message})
             }
         }
@@ -102,7 +131,7 @@ module.exports.ConfirmUser = (confirm_form, req, res) => {
     );
 };
 
-module.exports.LoginUser = (login_form, req, res) => {
+module.exports.LoginUser = function (login_form, req, res){
     cognito.LoginUser(login_form,
         function (credential, cognitoUser) {
             utils.identify("credential", credential);
@@ -150,6 +179,7 @@ module.exports.LoginUser = (login_form, req, res) => {
         }
     )
 };
+
 /* this code use to verify attribute for AUTHORIZED user, with specified attrubute in form
 module.exports.VerifyUser = (verify_form, req, res) => {
     cognito.VerifyUser(req, res, verify_form,

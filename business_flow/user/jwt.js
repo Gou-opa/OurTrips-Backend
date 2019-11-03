@@ -47,7 +47,7 @@ module.exports.check = function (session, onSuccessCallback, onErrorCallback, on
                         else onSuccessCallback(decoded.user);
                         break;
                     default:
-                        onFailureCallback({"message":"More than 1 session have same identities !"});
+                        onErrorCallback({"message":"More than 1 session have same identities !"});
                         break;
                 }
 
@@ -57,6 +57,37 @@ module.exports.check = function (session, onSuccessCallback, onErrorCallback, on
 
     } catch (err) {
         if(err.name == "TokenExpiredError") onExpiredCallback();
-        else onFailureCallback(err);
+        else onErrorCallback(err);
+    }
+};
+
+module.exports.checkConnection = function (ConnectionSession, onSuccessCallback, onErrorCallback, onExpiredCallback, onLogoutCallback) {
+    const {username, token, res, req} = ConnectionSession;
+    try {
+        let decoded = jwt.verify(token, HS256Key);
+        SesionManager.get(
+            ConnectionSession,
+            function (result) {
+                switch (result.length) {
+                    case 0:
+                        onErrorCallback({"message":"session not found in db"});
+                        break;
+                    case 1:
+                        let user_session_stored = result[0];
+                        if (user_session_stored.logged_out) onLogoutCallback();
+                        else onSuccessCallback(decoded.user, req, res);
+                        break;
+                    default:
+                        onErrorCallback({"message":"More than 1 session have same identities !"});
+                        break;
+                }
+
+
+            }
+        );
+
+    } catch (err) {
+        if(err.name == "TokenExpiredError") onExpiredCallback();
+        else onErrorCallback(err);
     }
 };

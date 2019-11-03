@@ -78,6 +78,15 @@ function GetAllAttribute(cognitoUser, onSuccessCallback, onFailureCallback) {
 module.exports.GetUserAttributes = function (cognitoUser, onSuccessCallback, onFailureCallback) {
     Sync(GetAllAttribute(cognitoUser, onSuccessCallback, onFailureCallback));
 };
+module.exports.updateAttributes = function(cognitoUser, new_d_attribute, onSuccessCallback, onFailureCallback){
+    var attributeList = [];
+    var attribute = new AmazonCognitoIdentity.CognitoUserAttribute(new_d_attribute);
+    attributeList.push(attribute);
+    cognitoUser.updateAttributes(attributeList, function(err, result) {
+        if (err) onFailureCallback(err);
+        else onSuccessCallback(result);
+    });
+};
 module.exports.LoginUser = function (login_form, onSuccessCallback, onFailureCallback) {
     const authenticationData = {
         Username: login_form.username,

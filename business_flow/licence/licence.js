@@ -1,10 +1,10 @@
-const VehicleManager = require('../../core/mysql/vehicle');
+const LicenceManager = require('../../core/mysql/licence');
 const utils = require('../../utils/utils');
 
 module.exports.register = function (user_info, req, res) {
     let register_form = req.body;
     register_form.driver_id = user_info.info.sub;
-    VehicleManager.store(register_form,
+    LicenceManager.store(register_form,
         function () {
             res.json({'status': 200, "message": "Ok, waiting for approval."})
         },
