@@ -1,7 +1,7 @@
-const cognito = require('./../aws/coginito');
-const utils = require('./../utils/utils');
-const jwt = require('./../user/jwt');
-const SessionManager = require('./../mysql/session');
+const cognito = require('../../core/aws/coginito');
+const utils = require('../../utils/utils');
+const jwt = require('./jwt');
+const SessionManager = require('../../core/mysql/session');
 
 module.exports.Verify = function (form, req, res) {
     jwt.check(
@@ -30,7 +30,18 @@ module.exports.Verify = function (form, req, res) {
         }
     );
 };
-
+module.exports.Authen = function (form, onSuccessCallback, onErrorCallback, onExpireCallback, onLoggedOutCallback) {
+    jwt.check(
+        {
+            "username": form.username,
+            "token" : form.token
+        },
+        onSuccessCallback, //parram user_info
+        onErrorCallback, //parram err
+        onExpireCallback, //0 param
+        onLoggedOutCallback //0 param
+    );
+};
 module.exports.LogOut = function (form, req, res) {
     function logout(user_info) {
         utils.identify('logging out user', form.username);

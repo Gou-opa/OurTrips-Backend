@@ -1,6 +1,6 @@
 const fs = require('fs');
 const PRIVATE_KEY_LENGTH = 32;
-const sessionDB = require('./../mysql/session');
+const sessionDB = require('../core/mysql/session');
 
 /*
 Generate secret

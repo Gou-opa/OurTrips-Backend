@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const utils = require('./../utils/utils');
-const SesionManager = require('./../mysql/session');
-const config = require('./../config/config');
+const utils = require('../../utils/utils');
+const SesionManager = require('../../core/mysql/session');
+const config = require('../../config/config');
 
 const secret = config.secret;
 const jwtexpires = config.jwt.expire;
@@ -39,7 +39,7 @@ module.exports.check = function (session, onSuccessCallback, onErrorCallback, on
             function (result) {
                 switch (result.length) {
                     case 0:
-                        onFailureCallback({"message":"session not found in db"});
+                        onErrorCallback({"message":"session not found in db"});
                         break;
                     case 1:
                         let user_session_stored = result[0];
