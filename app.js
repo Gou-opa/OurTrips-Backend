@@ -31,6 +31,8 @@ var licenceRoute = require('./routes/licence');
 app.use('/licence', licenceRoute);
 var employeeRoute = require('./routes/employee');
 app.use('/employee', employeeRoute);
+var ewalletRoute = require('./routes/ewallet');
+app.use('/ewallet', ewalletRoute);
 
 
 

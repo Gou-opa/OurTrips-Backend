@@ -3,8 +3,10 @@ const config = require('./config');
 const utils = require('../utils/utils');
 const table_name = config.vehicle_table;
 const expired_time = config.vehicle_expired_time;
-module.exports.store = function (vehicle, onSuccessCallback, onFailureCallback) {
-    const {brand, name, type, engine_cap, color, gross_ton, total_weight, n_passengers, driver_id} = vehicle;
+
+module.exports.store = function (details, onSuccessCallback, onFailureCallback) {
+    let {vehicle, driver_id} = details;
+    const {brand, name, type, engine_cap, color, gross_ton, total_weight, n_passengers} = vehicle;
     pool.query(
         "INSERT INTO "+table_name+" (brand, name, type, engine_cap, color, gross_ton, total_weight, n_passengers, approval_status, driver_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [ brand, name, type, engine_cap, color, gross_ton, total_weight, n_passengers, 'WAITING' , driver_id],
@@ -33,6 +35,21 @@ module.exports.approve = function(form, onSuccessCallback, onFailureCallback){
         }
     );
 };
+module.exports.delete = function(details, onSuccessCallback, onNotFound, onFailureCallback){
+    const {id, driver_id} = details;
+    pool.query(
+        "DELETE FROM "+table_name+" WHERE id=? and driver_id = ?",
+        [id, driver_id],
+        function (err, result) {
+            if (err) onFailureCallback(err);
+            else {
+                utils.identify("store vehicle", result);
+                if(result.affectedRows) onSuccessCallback();
+                else onNotFound();
+            }
+        }
+    );
+};
 module.exports.fetch = function (max, onSuccessCallback, onFailureCallback) {
     let now = new Date(new Date().toUTCString());
     if (max <= 0){
@@ -50,6 +67,46 @@ module.exports.fetch = function (max, onSuccessCallback, onFailureCallback) {
         pool.query(
             "SELECT * FROM " + table_name + " WHERE approval_status='WAITING' LIMIT "+ max,
             [],
+            function (err, result) {
+                if(err) onFailureCallback(err);
+                else onSuccessCallback(result);
+            }
+        );
+    }
+};
+
+module.exports.get = function (details, onSuccessCallback, onNotFound, onFailureCallback) {
+    let {driver_id, id} = details;
+    pool.query(
+        "SELECT * FROM " + table_name + " WHERE driver_id=? and id = ?",
+        [driver_id, id],
+        function (err, result) {
+            if(err) onFailureCallback(err);
+            else {
+                if(result.length) onSuccessCallback(result[0]);
+                else onNotFound();
+            }
+        }
+    );
+};
+
+module.exports.fetch_own = function (details, onSuccessCallback, onFailureCallback) {
+    let {max, driver_id} = details;
+    if (max <= 0){
+        //fetch all
+        pool.query(
+            "SELECT * FROM " + table_name + " WHERE driver_id = ?",
+            [driver_id],
+            function (err, result) {
+                if(err) onFailureCallback(err);
+                else onSuccessCallback(result);
+            }
+        );
+    } else {
+        //fetch max
+        pool.query(
+            "SELECT * FROM " + table_name + " WHERE driver_id = ? LIMIT "+ max,
+            [driver_id],
             function (err, result) {
                 if(err) onFailureCallback(err);
                 else onSuccessCallback(result);

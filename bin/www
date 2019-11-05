@@ -3,7 +3,7 @@
  * Config
  */
 
-const config = require('./../config/config');
+const config = require('../config/config');
 const utils = require('../core/utils/utils');
 utils.identify("Server started on port", config.be_port);
 /**
