@@ -1,7 +1,7 @@
 const fs = require('fs');
 const crypto = require("crypto");
 
-const config = require('./../config/config');
+const config = require('../../config/config');
 const server_secret = config.secret.hex.secret;
 /*
 Generate secret

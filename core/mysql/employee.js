@@ -1,6 +1,6 @@
 const pool = require('./connectionPool');
 const config = require('./config');
-const utils = require('../../utils/utils');
+const utils = require('../utils/utils');
 
 module.exports.register = function (employee, onSuccessCallback, onFailureCallback) {
     const {id, department, role, username} = employee;

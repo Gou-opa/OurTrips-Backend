@@ -1,6 +1,6 @@
 const pool = require('./connectionPool');
 const config = require('./config');
-const utils = require('../../utils/utils');
+const utils = require('../utils/utils');
 const table_name = config.licence_table;
 const expired_time = config.licence_expired_time;
 module.exports.store = function (licence, onSuccessCallback, onFailureCallback) {

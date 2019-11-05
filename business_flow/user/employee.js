@@ -2,7 +2,7 @@ const EmployeeManager = require('../../core/mysql/employee');
 const LicenceManager = require('../../core/mysql/licence');
 const VehicleManager = require('../../core/mysql/vehicle');
 const cognito = require('../../core/aws/coginito');
-const utils = require('../../utils/utils');
+const utils = require('../../core/utils/utils');
 const secret = require('../../config/server_secret').secret.hex.secret;
 
 module.exports.Grant = function (admin_infopack, req, res){

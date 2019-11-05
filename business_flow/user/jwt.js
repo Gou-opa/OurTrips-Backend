@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const utils = require('../../utils/utils');
+const utils = require('../../core/utils/utils');
 const SesionManager = require('../../core/mysql/session');
 const config = require('../../config/config');
 
@@ -52,7 +52,8 @@ module.exports.check = function (session, onSuccessCallback, onErrorCallback, on
                 }
 
 
-            }
+            },
+            onErrorCallback
         );
 
     } catch (err) {
@@ -81,9 +82,8 @@ module.exports.checkConnection = function (ConnectionSession, onSuccessCallback,
                         onErrorCallback({"message":"More than 1 session have same identities !"});
                         break;
                 }
-
-
-            }
+            },
+            onErrorCallback
         );
 
     } catch (err) {

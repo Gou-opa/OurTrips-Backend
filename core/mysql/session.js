@@ -1,6 +1,6 @@
 const pool = require('./connectionPool');
 const config = require('./config');
-const utils = require('../../utils/utils');
+const utils = require('../utils/utils');
 
 module.exports.store = function (session, onSuccessCallback, onFailureCallback) {
     const {username, login_at, token, info, logged_out} = session;

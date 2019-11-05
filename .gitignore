@@ -4,7 +4,7 @@
 # secret config
 config/config.json
 config/server_secret.json
-/secret/grant_secret.json
+/core/secret/grant_secret.json
 
 # End of Backend
 

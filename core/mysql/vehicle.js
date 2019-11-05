@@ -1,6 +1,6 @@
 const pool = require('./connectionPool');
 const config = require('./config');
-const utils = require('../../utils/utils');
+const utils = require('../utils/utils');
 const table_name = config.vehicle_table;
 const expired_time = config.vehicle_expired_time;
 module.exports.store = function (vehicle, onSuccessCallback, onFailureCallback) {

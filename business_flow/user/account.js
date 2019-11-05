@@ -1,5 +1,5 @@
 const cognito = require('../../core/aws/coginito');
-const utils = require('../../utils/utils');
+const utils = require('../../core/utils/utils');
 const jwt = require('./jwt');
 const SessionManager = require('../../core/mysql/session');
 

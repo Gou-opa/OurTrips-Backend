@@ -4,7 +4,7 @@
  */
 
 const config = require('./../config/config');
-const utils = require('./../utils/utils');
+const utils = require('../core/utils/utils');
 utils.identify("Server started on port", config.be_port);
 /**
  * Module dependencies.

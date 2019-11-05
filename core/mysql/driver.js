@@ -1,6 +1,6 @@
 const pool = require('./connectionPool');
 const config = require('./config');
-const utils = require('../../utils/utils');
+const utils = require('../utils/utils');
 
 module.exports.register = function (driver, onSuccessCallback, onFailureCallback) {
     const {id, city, district, address_line1, address_line2} = driver;

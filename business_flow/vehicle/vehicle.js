@@ -1,5 +1,5 @@
 const VehicleManager = require('../../core/mysql/vehicle');
-const utils = require('../../utils/utils');
+const utils = require('../../core/utils/utils');
 
 module.exports.register = function (user_info, req, res) {
     let register_form = req.body;
