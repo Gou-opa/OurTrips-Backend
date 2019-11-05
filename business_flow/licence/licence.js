@@ -10,7 +10,7 @@ module.exports.register = function (user_info, req, res) {
         },
         function (err) {
             utils.identify("save vehicle error", [register_form, err]);
-            res.json({"status": 500, "Error": err.message});
+            res.json({"status": 500});
         }
     )
 };

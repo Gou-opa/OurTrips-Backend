@@ -61,7 +61,8 @@ module.exports.AuthenThen = function(action, req, res){
         }
     );
 };
-module.exports.AuthenRoleThen = function(action, role, req, res){
+
+const AuthenRoleThen = function(action, role, req, res){
     /*
     params: action: function (user_info_object, req, res) { ... }
         use to launch action with user info and authenticated
@@ -71,6 +72,7 @@ module.exports.AuthenRoleThen = function(action, role, req, res){
     Authen2(
         {req: req, res: res},
         function (user_infopack, req, res){
+            utils.identify("role of request", user_infopack['info']['custom:role']);
             if(user_infopack['info']['custom:role'] == role) action(user_infopack, req, res);
             else {
                 res.json({"status": 403, "Error": "Not authorized as " + role});
@@ -86,6 +88,10 @@ module.exports.AuthenRoleThen = function(action, role, req, res){
             res.json({"status": 401, "Error": "User logged out"});
         }
     );
+};
+module.exports.AuthenRoleThen = AuthenRoleThen;
+module.exports.AuthenEmployeeThen = function(action, req, res){
+    AuthenRoleThen(action, 'employee', req, res);
 };
 module.exports.LogOut = function (user, req, res) {
     var form = req.body;
