@@ -1,0 +1,38 @@
+
+<div class="login-container">
+    <div class="action-form">
+        <form action="/login" method="post">
+        <h2>Welcome</h2>
+        <div class="input-div one">
+            <div class="i">
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+            <div>
+                <h5>Username</h5>
+                <input type="text" name="username" id="abc" class="input">
+            </div>
+        </div>
+
+        <div class="input-div two">
+            <div class="i">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+            </div>
+            <div>
+                <h5>Password</h5>
+                <input type="password" name="password" class="input">
+            </div>
+        </div>
+        <div class="checkbox">
+            <label class="switch">
+                    <input type="checkbox" id="cb">
+                    <span class="slider"></span>
+            </label>
+            <label for="cb" class="remember">Remember Me!</label>
+        </div>
+        <a id="forgot" href="/forgot-password">Forgot Password</a>
+        <input type="submit" value="Login" class="btn">
+    </form>  
+        <p style="color:#999">OR</p>
+        <a href="/register"><button class="btn">Signup</button></a>
+    </div>
+</div>
