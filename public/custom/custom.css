@@ -1,0 +1,23 @@
+.btn-prinary {
+	background-image: linear-gradient(to right, #77128b, #b11ebe, #680a60);
+	border-color: #b522c9;
+	border-radius: 25px;
+	color: #fff;
+}
+
+.bg-color {
+	background-image: linear-gradient(to right, #77128b, #b11ebe, #680a60);
+	border-color: #b522c9;
+	border-radius: 25px;
+	color: #fff;
+}
+
+.btn-prinary:hover {
+	background: #fff;
+	color: #b522c9
+}
+
+.box.box-primary {
+	border-top-color: #b522c9;
+}
+

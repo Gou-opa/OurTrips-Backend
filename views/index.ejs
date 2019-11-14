@@ -1,16 +1,66 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
+    <!-- Mobile Specific Meta -->
+    <meta content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="author" content="colorlib">
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="">
-</head>
-<body>
-<p>abc</p>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <title> OurTrips </title>
+    <!--
+    CSS
+    ============================================= -->
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="/adminlte/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/adminlte/css/skin-purple.css">
+    <link rel="stylesheet" href="/custom/custom.css">
 
+ </head>
+<body class="hold-transition skin-purple fixed sidebar-mini" >
+    <div class="wrapper" >
+        <!-- header -->
+            <% include layout/header %>
+        <!-- sidebar menu -->
+           	<% include layout/sidebar %>
+        <!-- content -->
+
+
+        <div class="content-wrapper">
+          <% if(pageID == 1) { %>
+            <% include component/home/home %>
+          <% } else if (pageID == 2) { %>
+              <% include component/vehicle/manager %>
+          <% } else if (pageID == 3) { %>
+              <% include component/vehicle/addVehicle %>
+          <% } else if (pageID == 4) { %>
+              <% include component/vehicle/editVehicle %>
+          <% } else if (pageID == 5) { %>
+              <% include component/driver/driver %>
+          <% } else if (pageID == 6) { %>
+              <% include component/driver/addDriver %>
+          <% } else if (pageID == 7) { %>
+              <% include component/licence/licence %>
+          <% } else if (pageID == 8) { %>
+              <% include component/licence/addLicence %>
+          <% } else if (pageID == 9) { %>
+              <% include component/licence/editLicence %>
+          <% } %>
+        </div>
+  <!-- /.content-wrapper -->
+  <%  include layout/footer %>
+    </div>
+<script src="/jquery/jquery.min.js"></script>
+<script src="/jquery/jquery-ui.min.js"></script>
+<script src="/jquery/jquery.slimscroll.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/adminlte/js/adminlte.min.js"></script>
+<script src="/adminlte/js/demo.js"></script>
+<script src="<%= script %>"></script>
 </body>
-<script src=""></script>
 </html>

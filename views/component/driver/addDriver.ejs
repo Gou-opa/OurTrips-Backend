@@ -1,0 +1,73 @@
+<section class="content-header">
+    <h1>Home</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-car"></i> Driver</a></li>
+        <li><a href="#" class="active"><i class="fa fa-plus-square"></i>Add Driver</a></li>
+    </ol>
+    <hr>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+
+
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thêm tài xế</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+
+                    <div class="box-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">City</label>
+                                <div class="col-sm-10">
+                                    <select name="tinh" id="tinh" class="form-control">
+                                        <option value="">--Chọn--</option>
+                                        <% for(i = 0; i< data.length;i++) {%>
+                                            <option value="<%= data[i].id %>"><%= data[i].name%></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">District</label>
+                                <div class="col-sm-10">
+                                    <select name="huyen" id="huyen" class="form-control">
+                                        <option value="">--Chọn--</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                <form class="form-horizontal" action="/vehicle" method="post">
+                    <input type="hidden" name="city" id="value-city">
+                    <input type="hidden" name="district" id="value-district">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2  control-label">Address 1</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="address-1" id="inputEmail3" placeholder="Địa chỉ 1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2  control-label">Address 2</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="address-2" id="inputEmail3" placeholder="Địa chỉ 2">
+                        </div>
+                    </div>
+                    <div class="box-footer" align="center">
+                        <button type="submit" class="btn btn-primary bg-color">
+                            Thêm tài xế
+                        </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+
+</section>

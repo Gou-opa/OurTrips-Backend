@@ -258,13 +258,13 @@ a#forgot:hover {
 
 @media screen and (max-width: 1024px) {
     
-    form {
+    .action-form {
         width:320px;
         box-shadow: none;
         padding: 0;
     }
 
-    form h2 {
+    .action-form h2 {
         font-size: 2.4rem;
         margin: 8px 0;
     }
@@ -275,15 +275,12 @@ a#forgot:hover {
 }
 
 @media screen and (max-width: 789px) {
-    form {
+    .action-form {
         width: 400px;
         background: #fff;
         border: 1px solid #77128b;
         box-shadow: 1px 3px 20px rgba(0, 0, 0, 0.4);
         padding: 0.5rem;
-    }
-    .btn {
-        margin-left: 6rem;
     }
     .img {
         display: none;
