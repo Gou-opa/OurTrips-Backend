@@ -195,7 +195,7 @@ module.exports.LoginUser = function (login_form, req, res){
                 res.redirect(
                     url.format(
                         {
-                            pathname:"/verify",
+                            pathname:"/user/verify",
                             query: {
                                 "username": login_form.username,
                                 "password": login_form.password

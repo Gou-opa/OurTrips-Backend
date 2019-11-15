@@ -42,9 +42,7 @@ router.get('/driver/add-driver', function (req, res, next) {
     res.render('./index.ejs', { pageID: 6, 'data': data, 'script': '/custom/dropdownlist.js'});
 });
 
-router.get('/licence', function(req, res, next) {
-	res.render('./index.ejs', {pageID: 7, 'script': ''});
-});
+
 
 router.get('/licence/add-licence', function(req, res, next) {
 	res.render('./index.ejs', {pageID: 8, 'script': ''});

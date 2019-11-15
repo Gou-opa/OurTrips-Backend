@@ -28,6 +28,10 @@ router.post('/check_role', function (req, res) {
     Account.AuthenThen(Account.Verify, req, res);
 });
 
-
+router.get('/validate', function(req, res) {
+    let username = req.query("username");
+    let password = req.query("password");
+    res.render('./index.ejs', {pageID: , 'script': ''});
+});
 
 module.exports = router;
