@@ -13,22 +13,22 @@ module.exports.Grant = function (admin_infopack, req, res){
             function (credential, cognitoUser) {
                 cognito.updateAttributes(cognitoUser, {Name: "custom:role", Value: grant_form.role},
                     function (result) {
-                        res.json({'status': 200, 'result' : result});
+                        res.status(200).json({'result' : result});
                     },
                     function (err) {
                         utils.identify("Update role error", [grant_form, err]);
-                        res.json({"status": 500, "Error": err.message});
+                        res.status(500).json({ "Error": err.message});
                     }
                 );
             },
             function (err) {
                 utils.identify("Authen error", [grant_form, err]);
-                if (err.message === 'Incorrect username or password.') res.json({"status": 401, "Error": err.message});
-                else res.json({"status": 500, "Error": err.message});
+                if (err.message === 'Incorrect username or password.') res.status(401).json({"Error": err.message});
+                else res.status(500).json({ "Error": err.message});
             }
         );
     } else {
-        res.json({"status": 403, "Error": "Secret wrong !"});
+        res.status(403).json({ "Error": "Secret wrong !"});
     }
 
 };
@@ -40,11 +40,11 @@ module.exports.Approve = function(employee_info, req, res) {
                 {id: id, employee_id: employee_info.info.sub},
                 function (result) {
                     utils.identify("approve", result);
-                    res.json({status: 200});
+                    res.status(200).json({"message": "Approved"});
                 },
                 function (err) {
                     utils.identify("approve err", err);
-                    res.json({status: 500});
+                    res.status(500).json({message: "Some error happened"});
                 }
             );
             break;
@@ -54,16 +54,16 @@ module.exports.Approve = function(employee_info, req, res) {
                 {id: id, employee_id: employee_info.info.sub},
                 function (result) {
                     utils.identify("approve", result);
-                    res.json({status: 200});
+                    res.status(200).json({"message": "Approved"});
                 },
                 function (err) {
                     utils.identify("approve err", err);
-                    res.json({status: 500});
+                    res.status(500).json({message: "Some error happened"});
                 }
             );
         }
         default: {
-            res.json({status: 400, message: "Mismatch type"});
+            res.status(400).json({message: "Mismatch type"});
         }
     }
 };
@@ -73,11 +73,11 @@ module.exports.Fetch_licences = function(employee_info, req, res) {
     LicenceManager.fetch(
         max,
         function (result) {
-            res.json({status: 200, requests: result, count: result.length});
+            res.status(200).json({requests: result, count: result.length});
         },
         function (err) {
             utils.identify("fetch err", err);
-            res.json({status: 500});
+            res.status(500).json({message: "Some error happened"});
         }
     )
 };
@@ -87,11 +87,11 @@ module.exports.Fetch_vehicles = function(employee_info, req, res) {
     VehicleManager.fetch(
         max,
         function (result) {
-            res.json({status: 200, requests: result, count: result.length});
+            res.status(200).json({ requests: result, count: result.length});
         },
         function (err) {
             utils.identify("fetch err", err);
-            res.json({status: 500});
+            res.status(500).json({message: "Some error happened"});
         }
     )
 };
@@ -101,11 +101,11 @@ module.exports.register = function (employee_info, req, res) {
     register_form.id = employee_info.info.sub;
     EmployeeManager.register(register_form,
         function () {
-            res.json({'status': 200, "message": "Ok"})
+            res.status(200).json({"message": "Ok"})
         },
         function (err) {
             utils.identify("save vehicle error", [register_form, err]);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({"Error": err.message});
         }
     )
 };

@@ -29,9 +29,9 @@ module.exports.rotateKey = function(admin_info, req, res) {
         }),
         function (err) {
             if (err) {
-                res.json({"status": 500, "Error": err});
+                res.status(500).json({"Error": err});
             } else {
-                res.json({"status": 200});
+                res.status(200).json({"message": "ok"});
             }
         }
     );

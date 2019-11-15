@@ -10,7 +10,7 @@ module.exports.Verify = function (user_info, req, res) {
     utils.identify('requred role', form.role);
     if (user_info['info']['custom:role'] == form.role) action_permission = true;
     else action_permission = false;
-    res.json({"status": "authenticated", "action_permission" : action_permission});
+    res.status(200).json({"state": "authenticated", "action_permission" : action_permission});
 };
 module.exports.Authen = function (form, onSuccessCallback, onErrorCallback, onExpireCallback, onLoggedOutCallback) {
     jwt.check(
@@ -51,13 +51,13 @@ module.exports.AuthenThen = function(action, req, res){
         {req: req, res: res},
         action,
         function (err) {
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({"Error": err.message});
         },
         function () {
-            res.json({"status": 401, "Error": "Token expired"});
+            res.status(401).json({ "Error": "Token expired"});
         },
         function () {
-            res.json({"status": 401, "Error": "User logged out"});
+            res.status(401).json({ "Error": "User logged out"});
         }
     );
 };
@@ -75,17 +75,17 @@ const AuthenRoleThen = function(action, role, req, res){
             utils.identify("role of request", user_infopack['info']['custom:role']);
             if(user_infopack['info']['custom:role'] == role) action(user_infopack, req, res);
             else {
-                res.json({"status": 403, "Error": "Not authorized as " + role});
+                res.status(403).json({"Error": "Not authorized as " + role});
             }
         },
         function (err) {
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({ "Error": err.message});
         },
         function () {
-            res.json({"status": 401, "Error": "Token expired"});
+            res.status(401).json({"Error": "Token expired"});
         },
         function () {
-            res.json({"status": 401, "Error": "User logged out"});
+            res.status(401).json({"Error": "User logged out"});
         }
     );
 };
@@ -98,11 +98,11 @@ module.exports.LogOut = function (user, req, res) {
     utils.identify('logging out user', form.username);
     SessionManager.logout(form.token,
         function () {
-            res.json({"status": "logged out success"});
+            res.status(200).json({"message": "logged out success"});
         },
         function (err) {
             utils.identify("update logout status failed", err);
-            res.json({"status": "logging out failed at db"});
+            res.status(500).json({"message": "logging out failed at db"});
         }
     );
 };
@@ -111,15 +111,15 @@ module.exports.RegisterUser = (form, req, res) => {
         function (result) {
             let cognitoUser = result.user;
             console.log('user name is', cognitoUser.getUsername());
-            res.json({"status": 200, "Event": "Register success"})
+            res.status(200).json({"Event": "Register success"})
         },
         function (err) {
             if (err.message === "User already exists") {
                 utils.identify("User exsisted", form);
-                res.json({"status": 404, "Error": "Exsist"})
+                res.status(404).json({ "Error": "Exsist"})
             } else {
                 utils.identify("Signup error", [form, err]);
-                res.json({"status": 500, "Error": err.message})
+                res.status(500).json({"Error": err.message})
             }
         }
     );
@@ -128,11 +128,11 @@ module.exports.ConfirmUser = (confirm_form, req, res) => {
     cognito.ConfirmUser(confirm_form,
         function (result) {
             utils.identify("confirm", result);
-            res.json({"status": 200, "Event": "confirm success"})
+            res.status(200).json({"Event": "confirm success"})
         },
         function (err) {
             utils.identify("confirm error", [confirm_form, err]);
-            res.json({"status": 401, "Error": "Invalid verification code provided, please try again."});
+            res.status(401).json({ "Error": "Invalid verification code provided, please try again."});
         }
     );
 };
@@ -160,28 +160,27 @@ module.exports.LoginUser = function (login_form, req, res){
                                 "logged_out": 0
                             },
                             function (result) {
-                                res.json({
-                                    "status": 200,
+                                res.status(200).json({
                                     "Role": userAttributeList['custom:role'],
                                     "token": token
                                 });
                             },
                             function (err) {
-                                res.json({"status": 500, "Error": err.message});
+                                res.status(500).json({ "Error": err.message});
                             }
                         );
                     });
                 },
                 function (err) {
                     utils.identify("Retrieve role error", [login_form, err]);
-                    res.json({"status": 500, "Error": err.message});
+                    res.status(500).json({"Error": err.message});
                 }
             );
         },
         function (err) {
             utils.identify("Login error", [login_form, err]);
-            if (err.message === 'Incorrect username or password.') res.json({"status": 401, "Error": err.message});
-            else res.json({"status": 500, "Error": err.message});
+            if (err.message === 'Incorrect username or password.') res.status(401).json({ "Error": err.message});
+            else res.status(500).json({ "Error": err.message});
         }
     )
 };

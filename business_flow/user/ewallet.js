@@ -5,11 +5,11 @@ module.exports.registerNewWallet = function (user_info, req, res) {
     BankManagement.create(
         user_info.info.sub,
         function () {
-            res.json({'status': 200, "message": "Created"})
+            res.status(200).json({"message": "Created"})
         },
         function (err) {
             utils.identify("Create wallet err", err);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({ "Error": err.message});
         }
     );
 };
@@ -18,14 +18,14 @@ module.exports.charge = function (user_info, req, res) {
     BankManagement.increase(
         {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
         function () {
-            res.json({'status': 200, "message": "Charged"})
+            res.status(200).json({ "message": "Charged"})
         },
         function () {
-            res.json({"status": 403, "Error": "accountNumber not found"});
+            res.status(403).json({ "Error": "accountNumber not found"});
         },
         function (err) {
             utils.identify("charge err", err);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({ "Error": err.message});
         });
 };
 module.exports.withdraw = function (user_info, req, res) {
@@ -33,14 +33,14 @@ module.exports.withdraw = function (user_info, req, res) {
     BankManagement.decrease(
         {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
         function () {
-            res.json({'status': 200, "message": "Withdrawed"})
+            res.status(200).json({"message": "Withdrawed"})
         },
         function () {
-            res.json({"status": 403, "Error": "accountNumber not found"});
+            res.status(403).json({ "Error": "accountNumber not found"});
         },
         function (err) {
             utils.identify("charge err", err);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({"Error": err.message});
         });
 };
 module.exports.link = function (user_info, req, res) {
@@ -48,14 +48,14 @@ module.exports.link = function (user_info, req, res) {
     BankManagement.link(
         {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
         function () {
-            res.json({'status': 200, "message": "Linked"})
+            res.status(200).json({ "message": "Linked"})
         },
         function () {
-            res.json({"status": 403, "message" : "account linked before"});
+            res.status(403).json({ "message" : "account linked before"});
         },
         function (err) {
             utils.identify("Link account err", err);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({ "Error": err.message});
         }
     );
 };
@@ -75,11 +75,11 @@ module.exports.fetch = function (user_info, req, res) {
         }
     };
     const sendReult = function (result) {
-        res.json({status: 200, requests: result, count: result.length});
+        res.status(200).json({ requests: result, count: result.length});
     };
     const onError = function (err) {
         utils.identify("fetch err", err);
-        res.json({status: 500, Error: err});
+        res.status(500).json({ Error: err});
     };
     BankManagement.fetch_own(
         {user_id: user_info.info.sub, max: max},
@@ -92,14 +92,14 @@ module.exports.get = function (user_info, req, res) {
     BankManagement.link(
         {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
         function () {
-            res.json({'status': 200, "message": "Linked"})
+            res.status(200).json({"message": "Linked"})
         },
         function () {
-            res.json({"status": 403, "message" : "account linked before"});
+            res.status(403).json({ "message" : "account linked before"});
         },
         function (err) {
             utils.identify("Link account err", err);
-            res.json({"status": 500, "Error": err.message});
+            res.status(500).json({"Error": err.message});
         }
     );
 };

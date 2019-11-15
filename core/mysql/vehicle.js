@@ -20,6 +20,23 @@ module.exports.store = function (details, onSuccessCallback, onFailureCallback) 
     );
 };
 
+module.exports.serve = function (details, onSuccessCallback, onFailureCallback, onNotFound) {
+    let {serve, driver_id} = details;
+    const {id, open_price, trip_price, wait_price} = serve;
+    pool.query(
+        "UPDATE "+table_name+" SET open_price = ?, trip_price = ?, wait_price = ? WHERE driver_id = ? and id = ?",
+        [open_price, trip_price, wait_price, driver_id, id],
+        function (err, result) {
+            if (err) onFailureCallback(err);
+            else {
+                utils.identify("update failed", result);
+               if(result.affectedRows) onSuccessCallback();
+                else onNotFound();
+            }
+        }
+    );
+};
+
 module.exports.approve = function(form, onSuccessCallback, onFailureCallback){
     const {id, employee_id} = form;
     let due_date = new Date(new Date().setDate(new Date().getDate()+expired_time));

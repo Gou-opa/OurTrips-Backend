@@ -17,6 +17,8 @@ router.post('/get', function (req, res) {
 router.post('/add', function (req, res) {
     Account.AuthenThen(driver.add, req, res)
 });
+
+
 router.delete('/:type/:id', function (req, res) {
     Account.AuthenThen(driver.delete, req, res)
 });
