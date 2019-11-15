@@ -5,6 +5,7 @@ const cognito = require('../../core/aws/coginito');
 const utils = require('../../core/utils/utils');
 const secret = require('../../config/server_secret').secret.hex.secret;
 const UserManager = require('../../core/mysql/user');
+
 module.exports.Grant = function (admin_infopack, req, res){
     let grant_form = req.body;
 

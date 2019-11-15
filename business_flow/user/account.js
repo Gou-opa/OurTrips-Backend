@@ -11,7 +11,7 @@ module.exports.Verify = function (user_info, req, res) {
     let action_permission;
     utils.identify('retrieved user pack', user_info);
     utils.identify('requred role', form.role);
-    if (user_info['info']['custom:role'] == form.role) action_permission = true;
+    if (user_info['info']['role'] == form.role) action_permission = true;
     else action_permission = false;
     res.status(200).json({"state": "authenticated", "action_permission" : action_permission});
 };
@@ -96,6 +96,9 @@ module.exports.AuthenRoleThen = AuthenRoleThen;
 module.exports.AuthenEmployeeThen = function(action, req, res){
     AuthenRoleThen(action, 'employee', req, res);
 };
+module.exports.AuthenAdminThen = function(action, req, res){
+    AuthenRoleThen(action, 'admin', req, res);
+};
 module.exports.LogOut = function (user, req, res) {
     var form = req.body;
     utils.identify('logging out user', form.username);
@@ -172,7 +175,7 @@ const LoginUser = function (login_form, req, res){
                             },
                             function (result) {
                                 res.status(200).json({
-                                    "Role": userAttributeList['custom:role'],
+                                    "Role": userAttributeList['role'],
                                     "token": token
                                 });
                             },

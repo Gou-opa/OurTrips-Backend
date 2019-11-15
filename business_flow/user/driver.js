@@ -39,7 +39,7 @@ module.exports.Fetch = function(user_info, req, res) {
     };
     const onError = function (err) {
         utils.identify("fetch err", err);
-        res.status(200).json({ Error: err});
+        res.status(500).json({ Error: err});
     };
     switch (type) {
         case 'vehicle': {
@@ -159,46 +159,3 @@ module.exports.delete = function (user_info, req, res) {
     }
 
 };
-module.exports.get = function (user_info, req, res) {
-    let {type, id} = req.body;
-    let user_id = user_info.info.username;
-    switch (type) {
-        case "vehicle": {
-            VehicleManager.get(
-                {driver_id: user_id, id: id},
-                function (result) {
-                    res.status(200).json({ result: result})
-                },
-                function () {
-                    res.status(403).json({"Error": type + " id not found"});
-                },
-                function (err) {
-                    utils.identify("delete vehicle error", err);
-                    res.status(500).json({"Error": err.message});
-                }
-            );
-            break;
-        }
-        case "licence": {
-            LicenceManager.get(
-                {driver_id: user_id, id: id},
-                function (result) {
-                    res.status(200).json({ result: result})
-                },
-                function () {
-                    res.status(403).json({"Error": type + " id not found"});
-                },
-                function (err) {
-                    utils.identify("delete licence error", err);
-                    res.status(500).json({ "Error": err.message});
-                }
-            );
-            break;
-        }
-        default: {
-            res.status(400).json({message: "Mismatch type"});
-        }
-    }
-
-};
-
