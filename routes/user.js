@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Account = require('../business_flow/user/account');
+const Trip = require('../business_flow/trip/trip');
 
 router.post('/register', function (req, res, next) {
     var form = req.body;
@@ -26,6 +27,7 @@ router.post('/logout', function (req, res) {
 router.post('/check_role', function (req, res) {
     Account.AuthenThen(Account.Verify, req, res);
 });
+
 
 
 module.exports = router;

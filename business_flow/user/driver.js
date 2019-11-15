@@ -96,7 +96,7 @@ module.exports.add = function (user_info, req, res) {
             case 'serve_policy' : {
                 VehicleManager.serve({driver_id: user_info.info.sub, serve: register_form[type]},
                     function () {
-                        res.status(200).json({ "message": "Ok, waiting for approval."})
+                        res.status(200).json({ "message": "Ok"})
                     },
                     function (err) {
                         utils.identify("create serve policy vehicle error", [register_form, err]);
@@ -154,7 +154,7 @@ module.exports.delete = function (user_info, req, res) {
             break;
         }
         default: {
-            res.status(400).json(message: "Mismatch type"});
+            res.status(400).json({message: "Mismatch type"});
         }
     }
 

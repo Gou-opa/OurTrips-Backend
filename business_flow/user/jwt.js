@@ -76,7 +76,7 @@ module.exports.checkConnection = function (ConnectionSession, onSuccessCallback,
                     case 1:
                         let user_session_stored = result[0];
                         if (user_session_stored.logged_out) onLogoutCallback();
-                        else onSuccessCallback(decoded.user, req, res);
+                        else onSuccessCallback(getUserAttributes.user, req, res);
                         break;
                     default:
                         onErrorCallback({"message":"More than 1 session have same identities !"});

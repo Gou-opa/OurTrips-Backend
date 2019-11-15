@@ -40,18 +40,25 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
  */
 module.exports.RegisterUser = function (regist_form, onSuccessCallback, onFailureCallback) {
     var attributeList = [];
+    let gender;
+    switch (regist_form.gender) {
+        case 1: {
+            gender = 'male';
+            break;
+        }
+        case 0:{
+            gender = 'female';
+            break;
+        }
+        default: onFailureCallback({message: "gender code error"});
+    };
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "name", Value: regist_form.name}));
-    //attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"preferred_username",Value:"jay"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "gender", Value: regist_form.gender}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({
-        Name: "birthdate",
-        Value: regist_form.birthday
-    }));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "gender", Value: gender}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "birthdate",Value: regist_form.birthday}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "address", Value: regist_form.address}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "email", Value: regist_form.email}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "phone_number", Value: regist_form.tel}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name: "custom:role", Value: regist_form.role}));
-
 
     userPool.signUp(regist_form.username, regist_form.password, attributeList, null, function (err, result) {
         if (err) {

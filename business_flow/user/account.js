@@ -2,6 +2,9 @@ const cognito = require('../../core/aws/coginito');
 const utils = require('../../core/utils/utils');
 const jwt = require('./jwt');
 const SessionManager = require('../../core/mysql/session');
+const UserManager = require('../../core/mysql/user');
+const url = require('url');
+
 
 module.exports.Verify = function (user_info, req, res) {
     var form = req.body;
@@ -109,9 +112,16 @@ module.exports.LogOut = function (user, req, res) {
 module.exports.RegisterUser = (form, req, res) => {
     cognito.RegisterUser(form,
         function (result) {
-            let cognitoUser = result.user;
-            console.log('user name is', cognitoUser.getUsername());
-            res.status(200).json({"Event": "Register success"})
+            UserManager.store(
+                form,
+                function (result) {
+                    res.status(200).json({"Event": "Register success"});
+                },
+                function (err) {
+                    utils.identify("store to db error", [form, err]);
+                    res.status(500).json({"Error": err.message});
+                }
+            )
         },
         function (err) {
             if (err.message === "User already exists") {
@@ -124,6 +134,7 @@ module.exports.RegisterUser = (form, req, res) => {
         }
     );
 };
+
 module.exports.ConfirmUser = (confirm_form, req, res) => {
     cognito.ConfirmUser(confirm_form,
         function (result) {
@@ -180,6 +191,19 @@ module.exports.LoginUser = function (login_form, req, res){
         function (err) {
             utils.identify("Login error", [login_form, err]);
             if (err.message === 'Incorrect username or password.') res.status(401).json({ "Error": err.message});
+            else if (err.message === 'User is not confirmed.'){
+                res.redirect(
+                    url.format(
+                        {
+                            pathname:"/verify",
+                            query: {
+                                "username": login_form.username,
+                                "password": login_form.password
+                            }
+                        }
+                    )
+                );
+            }
             else res.status(500).json({ "Error": err.message});
         }
     )
