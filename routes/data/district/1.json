@@ -1,0 +1,46 @@
+[
+  {
+    "id" : 1,
+    "name" : "An Phú"
+  },
+  {
+    "id" : 2,
+    "name" : "TP. Châu Đốc"
+  },
+  {
+    "id" : 3,
+    "name" : "Châu Phú"
+  },
+  {
+    "id" : 4,
+    "name" : "Châu Thành"
+  },
+  {
+    "id" : 5,
+    "name" : "Chợ Mới"
+  },
+  {
+    "id" : 6,
+    "name" : "TP. Long Xuyên"
+  },
+  {
+    "id" : 7,
+    "name" : "Phú Tân"
+  },
+  {
+    "id" : 8,
+    "name" : "TX. Tân Châu"
+  },
+  {
+    "id" : 9,
+    "name" : "Thoại Sơn"
+  },
+  {
+    "id" : 10,
+    "name" : "Tịnh Biên"
+  },
+  {
+    "id" : 11,
+    "name" : "Tri Tôn"
+  }
+]

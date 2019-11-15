@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= name %></title>
+    <link rel="stylesheet" href="./login/css/login.css">
+    <link rel="stylesheet" href="./font-awesome/css/font-awesome.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+    <img src="./images/wave.png" alt="Bg" class="wave">
+    <div class="container">
+        <div class="img">
+            <img src="images/trip.svg" alt="trip">
+        </div>
+        <% if(pageID == 1) { %>
+            <% include login %>
+        <% } else if (pageID == 2) { %>
+            <% include signup %>
+        <% } else { %>
+            <%include forgotpassword %>
+        <% } %>
+        
+    </div>
+
+    <script src="./login/js/login.js"></script>
+</body>
+</html>
