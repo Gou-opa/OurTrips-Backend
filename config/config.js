@@ -9,7 +9,7 @@ const lodash = require('lodash');
 const config = require('./config.json');
 
 const fs = require('fs');
-const secretFile = fs.readFileSync("./config/server_secret.json");
+const secretFile = fs.readFileSync("../config/server_secret.json");
 const secret = JSON.parse(secretFile).secret;
 
 const defaultConfig = config.default;
