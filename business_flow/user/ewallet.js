@@ -3,7 +3,7 @@ const utils = require('../../core/utils/utils');
 
 module.exports.registerNewWallet = function (user_info, req, res) {
     BankManagement.create(
-        user_info.info.sub,
+        user_info.info.username,
         function () {
             res.status(200).json({"message": "Created"})
         },
@@ -16,7 +16,7 @@ module.exports.registerNewWallet = function (user_info, req, res) {
 module.exports.charge = function (user_info, req, res) {
     let {accountNumber, amount} = req.body;
     BankManagement.increase(
-        {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
+        {accountNumber: accountNumber, user_id: user_info.info.username, amount: amount},
         function () {
             res.status(200).json({ "message": "Charged"})
         },
@@ -31,7 +31,7 @@ module.exports.charge = function (user_info, req, res) {
 module.exports.withdraw = function (user_info, req, res) {
     let {accountNumber, amount} = req.body;
     BankManagement.decrease(
-        {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
+        {accountNumber: accountNumber, user_id: user_info.info.username, amount: amount},
         function () {
             res.status(200).json({"message": "Withdrawed"})
         },
@@ -46,7 +46,7 @@ module.exports.withdraw = function (user_info, req, res) {
 module.exports.link = function (user_info, req, res) {
     let {vendor, accountNumber} = req.body;
     BankManagement.link(
-        {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
+        {user_id: user_info.info.username, vendor: vendor, accountNumber: accountNumber},
         function () {
             res.status(200).json({ "message": "Linked"})
         },
@@ -82,7 +82,7 @@ module.exports.fetch = function (user_info, req, res) {
         res.status(500).json({ Error: err});
     };
     BankManagement.fetch_own(
-        {user_id: user_info.info.sub, max: max},
+        {user_id: user_info.info.username, max: max},
         doFilter,
         onError
     );
@@ -90,7 +90,7 @@ module.exports.fetch = function (user_info, req, res) {
 module.exports.get = function (user_info, req, res) {
     let {accountNumber} = req.body;
     BankManagement.link(
-        {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
+        {user_id: user_info.info.username, vendor: vendor, accountNumber: accountNumber},
         function () {
             res.status(200).json({"message": "Linked"})
         },

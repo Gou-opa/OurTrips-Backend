@@ -66,6 +66,7 @@ module.exports.checkConnection = function (ConnectionSession, onSuccessCallback,
     const {username, token, res, req} = ConnectionSession;
     try {
         let decoded = jwt.verify(token, HS256Key);
+        utils.identify("decoded user", decoded);
         SesionManager.get(
             ConnectionSession,
             function (result) {
@@ -76,7 +77,7 @@ module.exports.checkConnection = function (ConnectionSession, onSuccessCallback,
                     case 1:
                         let user_session_stored = result[0];
                         if (user_session_stored.logged_out) onLogoutCallback();
-                        else onSuccessCallback(getUserAttributes.user, req, res);
+                        else onSuccessCallback(decoded.user, req, res);
                         break;
                     default:
                         onErrorCallback({"message":"More than 1 session have same identities !"});
