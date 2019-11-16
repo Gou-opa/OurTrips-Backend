@@ -1,4 +1,3 @@
 const AWS = require('aws-sdk');
-AWS.config.region = "ap-southeast-1";
-
+AWS.config.loadFromPath('ourtrips_aws_user_credentials.json');
 module.exports = AWS;
