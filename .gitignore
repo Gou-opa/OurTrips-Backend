@@ -6,7 +6,6 @@ config/config.json
 config/server_secret.json
 /core/secret/grant_secret.json
 /test/
-/core/aws/ourtrips_aws_user_credentials.json
 # End of Backend
 
 

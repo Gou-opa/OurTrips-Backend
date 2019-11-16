@@ -1,3 +1,8 @@
 const AWS = require('aws-sdk');
-AWS.config.loadFromPath('ourtrips_aws_user_credentials.json');
+const config = require('./config');
+
+AWS.config.accessKeyId = config.accessKeyId;
+AWS.config.secretAccessKey = config.secretAccessKey;
+AWS.config.region = config.region;
+
 module.exports = AWS;
