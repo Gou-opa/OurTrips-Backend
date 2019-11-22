@@ -7,76 +7,116 @@
     <!-- sidebar menu -->
     <% include ../layout/sidebar %>
     <!-- content -->
-
-
     <div class="content-wrapper">
-
         <section class="content-header">
             <h1>Quản lý xe</h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-car"></i> Quản lý xe</a></li>
+                <li class="active"><i class="fa fa-plus-square"></i>Thêm xe</li>
             </ol>
             <hr>
         </section>
+
         <!-- Main content -->
         <section class="content">
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Quản lý xe</h3>
-                        </div>
-                        <div class="box-body table-responsive no-padding">
-                            <div style="padding: 10px;">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                    <th>STT</th>
-                                    <th>Tên xe</th>
-                                    <th>Hãng xe</th>
-                                    <th>Màu xe</th>
-                                    <th>Chỗ ngồi</th>
-                                    <th></th>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td width="5%">1</td>
-                                        <td width="30%">Lamboghini</td>
-                                        <td width="20%">blabla</td>
-                                        <td width="20%">vàng</td>
-                                        <td width="10%">4</td>
-                                        <td width="15%" align="center">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-primary bg-color" data-toggle="modal" data-target="#modal-default">
-                                                    Chi tiết
-                                                </button>
-                                                <button type="button" class="btn btn-primary bg-color">
-                                                    Xóa
-                                                </button>
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 col-md-10">
+                            <div class="box box-primary" align="center">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><b>Thêm xe mới</b></h3>
+                                </div>
+                                <form class="form-horizontal" action="/vehicle" method="post">
+                                    <div class="box-body">
+                                        <!-- Hãng xe -->
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Chọn loại tài khoản</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="radio" name="payment" value="">
                                             </div>
-                                        </td>
-                                    </tr>
-                                    <tr></tr>
 
-                                    </tbody>
-                                </table>
+                                        </div>
+                                        <!-- Tên xe -->
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Tên xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="name" id="inputEmail3" placeholder="Tên xe">
+                                            </div>
+
+                                        </div>
+                                        <!-- Loại xe -->
+                                        <div class="form-group">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Loại xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="type" id="inputEmail3" placeholder="Loại xe">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Engine Cap</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="engine-cap" id="inputEmail3" placeholder="Engine_Cap">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.cm<sup>3</sup></label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Màu xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="color" id="inputEmail3" placeholder="Màu xe">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Gross Ton</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="gross-ton" id="inputEmail3" placeholder="Gross_ton">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Khối lượng</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Khối lượng xe">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Số chố ngồi</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Số chỗ ngồi">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.chỗ</label>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                    <div class="box-footer" align="center">
+                                        <button type="submit" class="btn btn-primary bg-color">
+                                            Thêm xe
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                        </div>
-
-                        <div class="box-footer" align="center">
-                            <a href="/vehicle/add-vehicle">
-                                <button type="button" class="btn btn-primary bg-color">
-                                    Thêm xe
-                                </button>
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Đoạn này là modal -->
-
-
-
         </section>
     </div>
     <!-- /.content-wrapper -->

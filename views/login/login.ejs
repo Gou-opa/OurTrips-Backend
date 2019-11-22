@@ -1,7 +1,7 @@
 
 <div class="login-container">
     <div class="action-form">
-        <form action="/user/login" method="post">
+        <form action="/user/login" method="post" id="login_form">
         <h2>Welcome</h2>
         <div class="input-div one">
             <div class="i">
@@ -9,9 +9,12 @@
             </div>
             <div>
                 <h5>Username</h5>
-                <input type="text" name="username" id="abc" class="input">
+                <input type="text" name="username" class="input">
+
             </div>
+
         </div>
+            <p id="username"></p>
 
         <div class="input-div two">
             <div class="i">
@@ -20,8 +23,11 @@
             <div>
                 <h5>Password</h5>
                 <input type="password" name="password" class="input">
+
             </div>
+
         </div>
+            <p id="password"></p>
         <div class="checkbox">
             <label class="switch">
                     <input type="checkbox" id="cb">
