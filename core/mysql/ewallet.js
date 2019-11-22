@@ -49,13 +49,15 @@ module.exports.increase = function (details, onSuccessCallback, onNotFound, onFa
         }
     )
 };
-module.exports.decrease = function (details, onSuccessCallback, onNotFound, onFailureCallback) {
+module.exports.decrease = function (details, onSuccessCallback, onNotFound, onLowerThanZero, onFailureCallback) {
     let {accountNumber, user_id, amount} = details;
     pool.query(
         "UPDATE " + table_name+ " SET balance = balance - ? WHERE user_id = ? and accountNumber = ?",
         [amount, user_id, accountNumber],
         function (err, result) {
-            if(err) onFailureCallback(err);
+            if(err)
+                if(err.message.includes("out of range")) onLowerThanZero();
+                else onFailureCallback(err);
             else {
                 if(result.changedRows) onSuccessCallback();
                 else onNotFound();
@@ -110,4 +112,19 @@ module.exports.fetch_own = function (details, onSuccessCallback, onFailureCallba
             }
         );
     }
+};
+
+module.exports.get = function (details, onSuccessCallback, onNotFoundCallback, onFailureCallback) {
+    let {accountNumber, user_id} = details;
+    pool.query(
+        "SELECT * FROM " + table_name + " WHERE user_id = ? and accountNumber = ?",
+        [user_id, accountNumber],
+        function (err, result) {
+            if(err) onFailureCallback(err);
+            else {
+                if( result.length > 0) onSuccessCallback(result[0]);
+                else onNotFoundCallback();
+            }
+        }
+    );
 };

@@ -11,7 +11,7 @@ module.exports.Verify = function (user_info, req, res) {
     let action_permission;
     utils.identify('retrieved user pack', user_info);
     utils.identify('requred role', form.role);
-    if (user_info['info']['custom:role'] == form.role) action_permission = true;
+    if (user_info['info']['role'] == form.role) action_permission = true;
     else action_permission = false;
     res.status(200).json({"state": "authenticated", "action_permission" : action_permission});
 };
@@ -75,8 +75,8 @@ const AuthenRoleThen = function(action, role, req, res){
     Authen2(
         {req: req, res: res},
         function (user_infopack, req, res){
-            utils.identify("role of request", user_infopack['info']['custom:role']);
-            if(user_infopack['info']['custom:role'] == role) action(user_infopack, req, res);
+            utils.identify("role of request", user_infopack);
+            if(user_infopack['info']['role'] == role) action(user_infopack, req, res);
             else {
                 res.status(403).json({"Error": "Not authorized as " + role});
             }
@@ -96,6 +96,9 @@ module.exports.AuthenRoleThen = AuthenRoleThen;
 module.exports.AuthenEmployeeThen = function(action, req, res){
     AuthenRoleThen(action, 'employee', req, res);
 };
+module.exports.AuthenAdminThen = function(action, req, res){
+    AuthenRoleThen(action, 'admin', req, res);
+};
 module.exports.LogOut = function (user, req, res) {
     var form = req.body;
     utils.identify('logging out user', form.username);
@@ -109,7 +112,7 @@ module.exports.LogOut = function (user, req, res) {
         }
     );
 };
-module.exports.RegisterUser = (form, req, res) => {
+module.exports.RegisterUser = function(form, req, res) {
     cognito.RegisterUser(form,
         function (result) {
             UserManager.store(
@@ -139,7 +142,7 @@ module.exports.ConfirmUser = (confirm_form, req, res) => {
     cognito.ConfirmUser(confirm_form,
         function (result) {
             utils.identify("confirm", result);
-            res.status(200).json({"Event": "confirm success"})
+            LoginUser(confirm_form, req, res);
         },
         function (err) {
             utils.identify("confirm error", [confirm_form, err]);
@@ -148,12 +151,12 @@ module.exports.ConfirmUser = (confirm_form, req, res) => {
     );
 };
 
-module.exports.LoginUser = function (login_form, req, res){
+const LoginUser = function (login_form, req, res){
     cognito.LoginUser(login_form,
         function (credential, cognitoUser) {
             utils.identify("credential", credential);
             //utils.identify("secret", config.secret);
-            cognito.GetUserAttributes(cognitoUser,
+            UserManager.GetUserAttributes(login_form.username,
                 function (userAttributeList) {
                     utils.identify("user", userAttributeList);
                     jwt.create(
@@ -172,7 +175,7 @@ module.exports.LoginUser = function (login_form, req, res){
                             },
                             function (result) {
                                 res.status(200).json({
-                                    "Role": userAttributeList['custom:role'],
+                                    "Role": userAttributeList['role'],
                                     "token": token
                                 });
                             },
@@ -208,7 +211,7 @@ module.exports.LoginUser = function (login_form, req, res){
         }
     )
 };
-
+module.exports.LoginUser = LoginUser;
 /* this code use to verify attribute for AUTHORIZED user, with specified attrubute in form
 module.exports.VerifyUser = (verify_form, req, res) => {
     cognito.VerifyUser(req, res, verify_form,

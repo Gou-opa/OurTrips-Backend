@@ -3,7 +3,7 @@ const utils = require('../../core/utils/utils');
 
 module.exports.registerNewWallet = function (user_info, req, res) {
     BankManagement.create(
-        user_info.info.sub,
+        user_info.info.username,
         function () {
             res.status(200).json({"message": "Created"})
         },
@@ -15,38 +15,49 @@ module.exports.registerNewWallet = function (user_info, req, res) {
 };
 module.exports.charge = function (user_info, req, res) {
     let {accountNumber, amount} = req.body;
-    BankManagement.increase(
-        {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
-        function () {
-            res.status(200).json({ "message": "Charged"})
-        },
-        function () {
-            res.status(403).json({ "Error": "accountNumber not found"});
-        },
-        function (err) {
-            utils.identify("charge err", err);
-            res.status(500).json({ "Error": err.message});
-        });
+    if (amount < 0) res.status(403).json({"Error" : "Negative amount"});
+    else {
+        BankManagement.increase(
+            {accountNumber: accountNumber, user_id: user_info.info.username, amount: amount},
+            function () {
+                res.status(200).json({"message": "Charged"})
+            },
+            function () {
+                res.status(403).json({"Error": "accountNumber not found"});
+            },
+            function (err) {
+                utils.identify("charge err", err);
+                res.status(500).json({"Error": err.message});
+            }
+        );
+    }
 };
 module.exports.withdraw = function (user_info, req, res) {
     let {accountNumber, amount} = req.body;
-    BankManagement.decrease(
-        {accountNumber: accountNumber, user_id: user_info.info.sub, amount: amount},
-        function () {
-            res.status(200).json({"message": "Withdrawed"})
-        },
-        function () {
-            res.status(403).json({ "Error": "accountNumber not found"});
-        },
-        function (err) {
-            utils.identify("charge err", err);
-            res.status(500).json({"Error": err.message});
-        });
+    if (amount < 0) res.status(403).json({"Error" : "Negative amount"});
+    else {
+        BankManagement.decrease(
+            {accountNumber: accountNumber, user_id: user_info.info.username, amount: amount},
+            function () {
+                res.status(200).json({"message": "Withdrawed"})
+            },
+            function () {
+                res.status(403).json({"Error": "accountNumber not found"});
+            },
+            function () {
+                res.status(403).json({'Error': "Withdraw failed, lower than 0"});
+            },
+            function (err) {
+                utils.identify("charge err", err);
+                res.status(500).json({"Error": err.message});
+            }
+        );
+    }
 };
 module.exports.link = function (user_info, req, res) {
     let {vendor, accountNumber} = req.body;
     BankManagement.link(
-        {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
+        {user_id: user_info.info.username, vendor: vendor, accountNumber: accountNumber},
         function () {
             res.status(200).json({ "message": "Linked"})
         },
@@ -82,23 +93,23 @@ module.exports.fetch = function (user_info, req, res) {
         res.status(500).json({ Error: err});
     };
     BankManagement.fetch_own(
-        {user_id: user_info.info.sub, max: max},
+        {user_id: user_info.info.username, max: max},
         doFilter,
         onError
     );
 };
 module.exports.get = function (user_info, req, res) {
     let {accountNumber} = req.body;
-    BankManagement.link(
-        {user_id: user_info.info.sub, vendor: vendor, accountNumber: accountNumber},
-        function () {
-            res.status(200).json({"message": "Linked"})
+    BankManagement.get(
+        {user_id: user_info.info.username, accountNumber: accountNumber},
+        function (result) {
+            res.status(200).json({"ewallet":result})
         },
         function () {
-            res.status(403).json({ "message" : "account linked before"});
+            res.status(403).json({"Error": "Wallet with account number not found"});
         },
         function (err) {
-            utils.identify("Link account err", err);
+            utils.identify("Get account err", err);
             res.status(500).json({"Error": err.message});
         }
     );

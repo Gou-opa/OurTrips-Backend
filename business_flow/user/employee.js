@@ -4,6 +4,7 @@ const VehicleManager = require('../../core/mysql/vehicle');
 const cognito = require('../../core/aws/coginito');
 const utils = require('../../core/utils/utils');
 const secret = require('../../config/server_secret').secret.hex.secret;
+const UserManager = require('../../core/mysql/user');
 
 module.exports.Grant = function (admin_infopack, req, res){
     let grant_form = req.body;
@@ -11,9 +12,10 @@ module.exports.Grant = function (admin_infopack, req, res){
     if (grant_form.secret == secret){
         cognito.LoginUser(grant_form,
             function (credential, cognitoUser) {
-                cognito.updateAttributes(cognitoUser, {Name: "custom:role", Value: grant_form.role},
+                UserManager.grant(
+                    {username: grant_form.for_user, role:grant_form.role},
                     function (result) {
-                        res.status(200).json({'result' : result});
+                        res.status(200).json({'granted' : result.changedRows});
                     },
                     function (err) {
                         utils.identify("Update role error", [grant_form, err]);
@@ -37,7 +39,7 @@ module.exports.Approve = function(employee_info, req, res) {
     switch (type) {
         case "vehicle": {
             VehicleManager.approve(
-                {id: id, employee_id: employee_info.info.sub},
+                {id: id, employee_id: employee_info.info.username},
                 function (result) {
                     utils.identify("approve", result);
                     res.status(200).json({"message": "Approved"});
@@ -51,7 +53,7 @@ module.exports.Approve = function(employee_info, req, res) {
         }
         case "licence": {
             LicenceManager.approve(
-                {id: id, employee_id: employee_info.info.sub},
+                {id: id, employee_id: employee_info.info.username},
                 function (result) {
                     utils.identify("approve", result);
                     res.status(200).json({"message": "Approved"});
@@ -61,9 +63,11 @@ module.exports.Approve = function(employee_info, req, res) {
                     res.status(500).json({message: "Some error happened"});
                 }
             );
+            break;
         }
         default: {
             res.status(400).json({message: "Mismatch type"});
+            break;
         }
     }
 };
@@ -98,7 +102,7 @@ module.exports.Fetch_vehicles = function(employee_info, req, res) {
 
 module.exports.register = function (employee_info, req, res) {
     let register_form = req.body;
-    register_form.id = employee_info.info.sub;
+    register_form.id = employee_info.info.username;
     EmployeeManager.register(register_form,
         function () {
             res.status(200).json({"message": "Ok"})

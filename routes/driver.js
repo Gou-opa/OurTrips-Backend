@@ -25,9 +25,7 @@ router.post('/register', function (req, res) {
 router.post('/fetch', function (req, res) {
     Account.AuthenThen(driver.Fetch, req, res)
 });
-router.post('/get', function (req, res) {
-    Account.AuthenThen(driver.get, req, res)
-});
+
 router.post('/add', function (req, res) {
     Account.AuthenThen(driver.add, req, res)
 });

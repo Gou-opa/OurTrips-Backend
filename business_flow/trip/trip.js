@@ -4,7 +4,7 @@ module.exports.Create = function (user_info, req, res) {
     var {route} = req.body;
     let routeObj = parse_route(route);
     TripManager.register_route(
-        {owner_id: user_info.info.sub, route: route},
+        {owner_id: user_info.info.username, route: route},
         function (result) {
             res.status(200).json({"message": "Registed route"})
         },

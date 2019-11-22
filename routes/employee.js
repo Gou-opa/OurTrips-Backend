@@ -8,7 +8,7 @@ router.post('/register', function (req, res) {
 });
 router.post('/grant', function (req, res) {
     // su dung secret duoc admin dua cho de grant thanh employee
-    Account.AuthenThen(Employee.Grant, req, res)
+    Account.AuthenAdminThen(Employee.Grant, req, res)
 });
 router.post('/approve', function (req, res) {
     Account.AuthenEmployeeThen(Employee.Approve,  req, res)
