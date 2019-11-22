@@ -1,4 +1,15 @@
-<section class="content-header">
+<% include ../layout/head %>
+
+<body class="hold-transition skin-purple fixed sidebar-mini" >
+    <div class="wrapper" >
+        <!-- header -->
+        <% include ../layout/header %>
+        <!-- sidebar menu -->
+        <% include ../layout/sidebar %>
+        <!-- content -->
+
+    <div class="content-wrapper">
+    <section class="content-header">
             <h1>Quản lý xe</h1>
             <ol class="breadcrumb">
               <li><a href="#"><i class="fa fa-car"></i> Quản lý xe</a></li>
@@ -97,7 +108,7 @@
                           </div>
                           <!-- /.box-body -->
                           <div class="box-footer" align="center">
-                              <button type="button" class="btn btn-primary bg-color">
+                              <button type="submit" class="btn btn-primary bg-color" style="width: 10rem">
                                         Sửa xe
                               </button>
                             </div>
@@ -108,3 +119,10 @@
               </div>
             </div>
           </section>
+        </div>
+    <!-- /.content-wrapper -->
+    <%  include ../layout/footer %>
+    </div>
+    <% include ../layout/script %>
+    </body>
+</html>
