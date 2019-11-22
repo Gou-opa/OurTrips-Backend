@@ -1,7 +1,9 @@
 
 <div class="login-container">
     <div class="action-form">
-        <form action="/user/login" method="post" id="login_form">
+        <form id="login_form" onsubmit = "return form_submit('/user/login', 'login_form', function(response){
+            console.log(response);
+        })">
         <h2>Welcome</h2>
         <div class="input-div one">
             <div class="i">
