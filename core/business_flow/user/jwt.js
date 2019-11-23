@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const utils = require('../../core/utils/utils');
-const SesionManager = require('../../core/mysql/session');
-const config = require('../../config/config');
+const utils = require('../../utils/utils');
+const SesionManager = require('../../mysql/session');
+const config = require('../../../config/config');
 
 const secret = config.secret;
 const jwtexpires = config.jwt.expire;

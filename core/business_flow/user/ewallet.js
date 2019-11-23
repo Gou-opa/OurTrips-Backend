@@ -1,5 +1,5 @@
-const BankManagement = require('./../../core/mysql/ewallet');
-const utils = require('../../core/utils/utils');
+const BankManagement = require('../../mysql/ewallet');
+const utils = require('../../utils/utils');
 
 module.exports.registerNewWallet = function (user_info, req, res) {
     BankManagement.create(

@@ -33,8 +33,8 @@ var employeeRoute = require('./routes/employee');
 app.use('/employee', employeeRoute);
 var ewalletRoute = require('./routes/ewallet');
 app.use('/ewallet', ewalletRoute);
-var routeRoute = require('./routes/route');
-app.use('/route', routeRoute);
+var mapRoute = require('./routes/map');
+app.use('/map', mapRoute);
 
 
 

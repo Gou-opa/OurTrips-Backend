@@ -1,37 +1,29 @@
-const EmployeeManager = require('../../core/mysql/employee');
-const LicenceManager = require('../../core/mysql/licence');
-const VehicleManager = require('../../core/mysql/vehicle');
-const cognito = require('../../core/aws/coginito');
-const utils = require('../../core/utils/utils');
-const secret = require('../../config/server_secret').secret.hex.secret;
-const UserManager = require('../../core/mysql/user');
+const EmployeeManager = require('../../mysql/employee');
+const LicenceManager = require('../../mysql/licence');
+const VehicleManager = require('../../mysql/vehicle');
+const cognito = require('../../aws/coginito');
+const utils = require('../../utils/utils');
+const secret = require('../../../config/server_secret').secret.hex.secret;
+const UserManager = require('../../mysql/user');
 
-module.exports.Grant = function (admin_infopack, req, res){
+module.exports.Grant = function (admin_login_result, req, res){
     let grant_form = req.body;
-
-    if (grant_form.secret == secret){
-        cognito.LoginUser(grant_form,
-            function (credential, cognitoUser) {
-                UserManager.grant(
-                    {username: grant_form.for_user, role:grant_form.role},
-                    function (result) {
-                        res.status(200).json({'granted' : result.changedRows});
-                    },
-                    function (err) {
-                        utils.identify("Update role error", [grant_form, err]);
-                        res.status(500).json({ "Error": err.message});
-                    }
-                );
-            },
-            function (err) {
-                utils.identify("Authen error", [grant_form, err]);
-                if (err.message === 'Incorrect username or password.') res.status(401).json({"Error": err.message});
-                else res.status(500).json({ "Error": err.message});
-            }
-        );
-    } else {
-        res.status(403).json({ "Error": "Secret wrong !"});
-    }
+    if (admin_login_result.Role == 'admin') {
+        if (grant_form.secret == secret) {
+            UserManager.grant(
+                {username: grant_form.for_user, role: grant_form.role},
+                function (result) {
+                    res.status(200).json({'granted': result.changedRows});
+                },
+                function (err) {
+                    utils.identify("Update role error", [grant_form, err]);
+                    res.status(500).json({"Error": err.message});
+                }
+            );
+        } else {
+            res.status(403).json({"Error": "Secret wrong !"});
+        }
+    } else res.status(403).json({"Error": "Not authorized as admin"});
 
 };
 module.exports.Approve = function(employee_info, req, res) {

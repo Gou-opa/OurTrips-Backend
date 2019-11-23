@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Account = require('../business_flow/user/account');
-const Bank = require('../business_flow/user/ewallet');
+const Account = require('../core/business_flow/user/account');
+const Bank = require('../core/business_flow/user/ewallet');
 
 router.post('/register', function (req, res) {
     Account.AuthenThen(Bank.registerNewWallet, req, res);
