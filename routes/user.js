@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Account = require('../business_flow/user/account');
-const Trip = require('../business_flow/trip/trip');
+const Account = require('../core/business_flow/user/account');
+const Trip = require('../core/business_flow/map/trip');
 
 router.post('/register', function (req, res, next) {
     var form = req.body;
@@ -22,6 +22,9 @@ router.post('/confirm', function (req, res) {
 });
 router.post('/logout', function (req, res) {
     Account.AuthenThen(Account.LogOut, req, res);
+});
+router.put('/location', function (req, res) {
+    Account.AuthenThen(Account.SetLocation, req, res);
 });
 /* legacy part */
 router.post('/check_role', function (req, res) {

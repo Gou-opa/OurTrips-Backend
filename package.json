@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Gou-opa/OurTrips-Backend#readme",
   "dependencies": {
+    "@mapbox/geojson-merge": "^1.1.1",
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.533.0",
     "cookie-parser": "~1.4.4",
@@ -25,6 +26,8 @@
     "debug": "~2.6.9",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
+    "geojson": "^0.5.0",
+    "geojson-parser": "^1.0.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.1",
@@ -33,6 +36,7 @@
     "mysql": "^2.17.1",
     "node-fetch": "^2.6.0",
     "request": "^2.88.0",
+    "sort-json-array": "^0.1.7",
     "sync": "^0.2.5",
     "window-mock": "^0.1.0"
   }
