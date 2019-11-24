@@ -3,12 +3,16 @@ var router = express.Router();
 const Account = require('../core/business_flow/user/account');
 const Trip = require('../core/business_flow/map/trip');
 
+router.get('/profile', function (req, res) {
+   res.render('./component/account/information.ejs');
+});
+
 router.post('/register', function (req, res, next) {
     var form = req.body;
     Account.RegisterUser(form, req, res);
 });
 // router.post('/verify', function (req, res, next) {
-//     var verify_form = req.body;
+//     var verify_fota ngoanh sang da hai mayrm = req.body;
 //     Account.VerifyUser(verify_form, req, res);
 // });
 router.post('/login', function (req, res) {

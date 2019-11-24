@@ -1,0 +1,127 @@
+<% include ../layout/head %>
+
+<body class="hold-transition skin-purple fixed sidebar-mini" >
+<div class="wrapper" >
+    <!-- header -->
+    <% include ../layout/header %>
+    <!-- sidebar menu -->
+    <% include ../layout/sidebar %>
+    <!-- content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>Quản lý xe</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-car"></i> Quản lý xe</a></li>
+                <li class="active"><i class="fa fa-plus-square"></i>Thêm xe</li>
+            </ol>
+            <hr>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 col-md-10">
+                            <div class="box box-primary" align="center">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><b>Thêm xe mới</b></h3>
+                                </div>
+                                <form class="form-horizontal" action="/vehicle" method="post">
+                                    <div class="box-body">
+                                        <!-- Hãng xe -->
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Chọn loại tài khoản</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="radio" name="payment" value="">
+                                            </div>
+
+                                        </div>
+                                        <!-- Tên xe -->
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Tên xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="name" id="inputEmail3" placeholder="Tên xe">
+                                            </div>
+
+                                        </div>
+                                        <!-- Loại xe -->
+                                        <div class="form-group">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Loại xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="type" id="inputEmail3" placeholder="Loại xe">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Engine Cap</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="engine-cap" id="inputEmail3" placeholder="Engine_Cap">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.cm<sup>3</sup></label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Màu xe</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="color" id="inputEmail3" placeholder="Màu xe">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Gross Ton</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="gross-ton" id="inputEmail3" placeholder="Gross_ton">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Khối lượng</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Khối lượng xe">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Số chố ngồi</label>
+
+                                            <div class="col-sm-9 col-xs-8">
+                                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Số chỗ ngồi">
+                                            </div>
+                                            <label for="inputEmail3" class="col-sm-1 control-label">.chỗ</label>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                    <div class="box-footer" align="center">
+                                        <button type="submit" class="btn btn-primary bg-color">
+                                            Thêm xe
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- /.content-wrapper -->
+    <%  include ../layout/footer %>
+</div>
+<% include ../layout/script %>
+</body>
+</html>

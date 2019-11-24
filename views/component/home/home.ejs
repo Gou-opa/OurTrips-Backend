@@ -1,62 +1,89 @@
-<section class="content-header">
-              <h1>Home</h1>
-              <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-              </ol>
-              <hr>
-            </section>
+<% include ../layout/head %>
+<link rel="stylesheet" href="/map/leaflet/leaflet.css"/>
+<script src="/map/leaflet/leaflet.js"></script>
+<style>
+    #mapid {
+        min-height: 500px;
+    }
+</style>
 
-            <!-- Main content -->
-            <section class="content">
-              <div class="row">
-                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                  <p>Map here</p>
+<body class="hold-transition skin-purple fixed sidebar-mini" >
+<div class="wrapper" >
+    <!-- header -->
+    <% include ../layout/header %>
+    <!-- sidebar menu -->
+    <% include ../layout/sidebar %>
+    <!-- content -->
+
+
+    <div class="content-wrapper">
+        <section class="content-header">
+          <h1>Home</h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+          </ol>
+          <hr>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+              <div id="mapid"></div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="box box-primary">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">Tìm đường</h3>
+                  </div>
+                  <!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" action = "" method="post">
+                    <div class="box-body">
+                      <div class="form-group">
+                        <label>Điểm đi</label>
+                        <input type="text" class="form-control"placeholder="Điểm đi....">
+                      </div>
+
+                      <div class="form-group">
+                        <label>Điểm đến</label>
+                        <input type="text" class="form-control"placeholder="Điểm đến....">
+                      </div>
+                    </div>
+                    <!-- /.box-body -->
+
+                    <div class="box-footer justify-content-center">
+                      <button type="submit" class="btn btn-prinary">Tìm kiếm</button>
+                    </div>
+                  </form>
                 </div>
-
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+      <!-- /.box -->
                   <div class="box box-primary">
                       <div class="box-header with-border">
-                        <h3 class="box-title">Tìm đường</h3>
+                        <h3 class="box-title">Chuyến đi</h3>
                       </div>
-                      <!-- /.box-header -->
-                      <!-- form start -->
-                      <form role="form" action = "" method="post">
-                        <div class="box-body">
-                          <div class="form-group">
-                            <label>Điểm đi</label>
-                            <input type="text" class="form-control"placeholder="Điểm đi....">
-                          </div>
-                          
-                          <div class="form-group">
-                            <label>Điểm đến</label>
-                            <input type="text" class="form-control"placeholder="Điểm đến....">
-                          </div>
-                        </div>
-                        <!-- /.box-body -->
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody>
+                          <tr>
+                            <td width="70%">ABC</td>
+                            <td><button class="btn btn-primary bg-color">chi tiết</button></td>
+                          </tr>
 
-                        <div class="box-footer justify-content-center">
-                          <button type="submit" class="btn btn-prinary">Tìm kiếm</button>
-                        </div>
-                      </form>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-          <!-- /.box -->
-                      <div class="box box-primary">
-                          <div class="box-header with-border">
-                            <h3 class="box-title">Chuyến đi</h3>
-                          </div>
-                          <div class="box-body table-responsive no-padding">
-                            <table class="table table-hover">
-                              <tbody>
-                              <tr>
-                                <td width="70%">ABC</td>
-                                <td><button class="btn btn-primary bg-color">chi tiết</button></td>
-                              </tr>
+            </div>
+          </div>
 
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                </div>
-              </div>
-
-            </section>
+        </section>
+    </div>
+    <!-- /.content-wrapper -->
+    <%  include ../layout/footer %>
+</div>
+<% include ../layout/script %>
+<script src="/map/use-map.js"></script>
+</body>
+</html>
