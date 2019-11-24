@@ -5,6 +5,24 @@ var driver = require('../core/business_flow/user/driver');
 var licence = require('../core/business_flow/licence/licence');
 var vehicle = require('../core/business_flow/vehicle/vehicle');
 const Trip = require('../core/business_flow/map/trip');
+const data = require('./data/city.json');
+
+router.get('/', function (req, res, next) {
+    res.render('./component/driver/driver.ejs');
+});
+
+router.get('/add-driver', function (req, res, next) {
+    res.render('./component/driver/addDriver.ejs', {data: data});
+});
+
+router.get('/edit-driver', function (req, res, next) {
+    res.render('./component/driver/editDriver.ejs', {data: data});
+});
+
+
+
+
+
 router.post('/register', function (req, res) {
     Account.AuthenThen(driver.register, req, res)
 });

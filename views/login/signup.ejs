@@ -1,6 +1,6 @@
 <div class="login-container">
             <div class="action-form">
-                <form action="" method="post">
+                <form action="/user/register" method="post" id="register_form">
                 <h2>Sign Up</h2>
                 <div class="input-div one">
                     <div class="i">
@@ -8,9 +8,10 @@
                     </div>
                     <div>
                         <h5>Username</h5>
-                        <input type="text" name="username" id="abc" class="input">
+                        <input type="text" name="username" class="input">
                     </div>
                 </div>
+                    <p id="username"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -18,9 +19,11 @@
                     </div>
                     <div>
                         <h5>Họ tên</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="name" class="input">
                     </div>
                 </div>
+                    <p id="name"></p>
+
 
                 <div class="input-div two">
                     <div class="i">
@@ -28,9 +31,10 @@
                     </div>
                     <div>
                         <h5>Giới tính</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="gender" class="input">
                     </div>
                 </div>
+                    <p id="gender"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -38,9 +42,10 @@
                     </div>
                     <div>
                         <h5>Ngày sinh</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="birthday" class="input">
                     </div>
                 </div>
+                    <p id="birthday"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -48,9 +53,10 @@
                     </div>
                     <div>
                         <h5>Địa chỉ</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="address" class="input">
                     </div>
                 </div>
+                    <p id="address"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -58,9 +64,10 @@
                     </div>
                     <div>
                         <h5>Email</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="email" class="input">
                     </div>
                 </div>
+                    <p id="email"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -68,9 +75,21 @@
                     </div>
                     <div>
                         <h5>Số điện thoại</h5>
-                        <input type="text" name="password" class="input">
+                        <input type="text" name="tel" class="input">
                     </div>
                 </div>
+                    <p id="tel"></p>
+
+                <div class="input-div two">
+                    <div class="i">
+                        <i class="fa fa-flag" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h5>Quốc tịch</h5>
+                        <input type="text" name="nationality" class="input">
+                    </div>
+                </div>
+                    <p id="nationality"></p>
 
                 <div class="input-div two">
                     <div class="i">
@@ -81,6 +100,7 @@
                         <input type="password" name="password" class="input">
                     </div>
                 </div>
+                    <p id="password"></p>
                 
                 <div class="input-div two">
                     <div class="i">
@@ -88,13 +108,15 @@
                     </div>
                     <div>
                         <h5>Re - Password</h5>
-                        <input type="password" name="re-password" class="input">
+                        <input type="password" name="password_confirmation" class="input">
                     </div>
                 </div>
+                    <p id="password_confirmation"></p>
 
                 <input type="hidden" name="role" value="">
+                    <a id="forgot" href="/">Đã có tài khoản, hãy đăng nhập!</a>
                 
-                <input type="submit" value="Login" class="btn">
+                <input type="submit" value="Sign up" class="btn">
             </form>
             </div>
         </div>
