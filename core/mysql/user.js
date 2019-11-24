@@ -20,6 +20,21 @@ module.exports.store = function (details, onSuccessCallback, onFailureCallback) 
         }
     );
 };
+module.exports.set_location = function (details, onSuccessCallback, onFailureCallback) {
+    let { user_id, location} = details;
+    let { long, lat } =  location;
+    pool.query(
+        "UPDATE "+table_name+" SET location = POINT( "+ long + "," +lat+") WHERE username = ?",
+        [ user_id],
+        function (err, result) {
+            if (err) onFailureCallback(err);
+            else {
+                onSuccessCallback(result);
+            }
+        }
+    );
+};
+
 module.exports.GetUserAttributes = function (username, onSuccessCallback, onFailureCallback) {
     pool.query(
         "SELECT * FROM "+table_name+" WHERE username = ?",

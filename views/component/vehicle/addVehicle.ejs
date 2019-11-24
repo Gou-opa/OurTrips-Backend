@@ -62,7 +62,7 @@
                               <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Engine Cap</label>
 
                               <div class="col-sm-9 col-xs-8">
-                                <input type="text" class="form-control" name="engine-cap" id="inputEmail3" placeholder="Engine_Cap">
+                                <input type="text" class="form-control" name="engine_cap" id="inputEmail3" placeholder="Engine_Cap">
                               </div>
                               <label for="inputEmail3" class="col-sm-1 control-label">.cm<sup>3</sup></label>
                             </div>
@@ -80,7 +80,7 @@
                               <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Gross Ton</label>
 
                               <div class="col-sm-9 col-xs-8">
-                                <input type="text" class="form-control" name="gross-ton" id="inputEmail3" placeholder="Gross_ton">
+                                <input type="text" class="form-control" name="gross_ton" id="inputEmail3" placeholder="Gross_ton">
                               </div>
                               <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
                             </div>
@@ -89,7 +89,7 @@
                               <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Khối lượng</label>
 
                               <div class="col-sm-9 col-xs-8">
-                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Khối lượng xe">
+                                <input type="text" class="form-control" name="total_weight" id="inputEmail3" placeholder="Khối lượng xe">
                               </div>
                               <label for="inputEmail3" class="col-sm-1 control-label">.kg</label>
                             </div>
@@ -98,7 +98,7 @@
                               <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Số chố ngồi</label>
 
                               <div class="col-sm-9 col-xs-8">
-                                <input type="text" class="form-control" name="brand" id="inputEmail3" placeholder="Số chỗ ngồi">
+                                <input type="text" class="form-control" name="n_passengers" id="inputEmail3" placeholder="Số chỗ ngồi">
                               </div>
                               <label for="inputEmail3" class="col-sm-1 control-label">.chỗ</label>
                             </div>
@@ -123,5 +123,35 @@
     <%  include ../layout/footer %>
 </div>
 <% include ../layout/script %>
+<script>
+    $('#vehicle_form').submit(function(e){
+        e.preventDefault();
+        var url = $(this).attr('action');
+        var data = {
+            brand: $("input[name='brand']").val(),
+            name: $("input[name='name']").val(),
+            type: $("input[name='type']").val(),
+            engine_cap: $("input[name='engine_cap']").val(),
+            color: $("input[name='color']").val(),
+            gross_ton: $("input[name='gross_ton']").val(),
+            total_weight: $("input[name='total_weight']").val(),
+            n_passengers: $("input[name='n_passengers']").val(),
+            username: JSON.parse(localStorage.getItem('username'));
+            token: JSON.parse(localStorage.getItem('token'));
+        };
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'JSON',
+            data: data,
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
 </body>
 </html>

@@ -68,12 +68,12 @@ module.exports.delete = function(details, onSuccessCallback, onNotFound, onFailu
     );
 };
 module.exports.fetch = function (max, onSuccessCallback, onFailureCallback) {
-    let now = new Date(new Date().toUTCString());
+    let now = new Date();
     if (max <= 0){
         //fetch all
         pool.query(
-            "SELECT * FROM " + table_name + " WHERE approval_status='WAITING' OR approval_due_date < " + now,
-            [],
+            "SELECT * FROM " + table_name + " WHERE approval_status='WAITING' OR approval_due_date < ?",
+            [now],
             function (err, result) {
                 if(err) onFailureCallback(err);
                 else onSuccessCallback(result);
@@ -106,7 +106,16 @@ module.exports.get = function (details, onSuccessCallback, onNotFound, onFailure
         }
     );
 };
-
+module.exports.fetch_invitation = function (driver_id, onSuccessCallback, onNotFound, onFailureCallback) {
+    pool.query(
+        "SELECT * FROM invitations WHERE driver_id=?",
+        [driver_id],
+        function (err, result) {
+            if(err) onFailureCallback(err);
+            else onSuccessCallback(result);
+        }
+    );
+};
 module.exports.fetch_own = function (details, onSuccessCallback, onFailureCallback) {
     let {max, driver_id} = details;
     if (max <= 0){

@@ -7,3 +7,7 @@ function form_submit(url, formid, onSuccess) {
    });
 }
 
+$().ready(function(){
+   $('span#name_username').html(JSON.parse(localStorage.getItem('username')));
+});
+

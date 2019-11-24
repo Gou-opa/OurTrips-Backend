@@ -31,7 +31,7 @@
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><b>Thêm giấy phép mới</b></h3>
                                 </div>
-                                <form class="form-horizontal" action="/vehicle" method="post">
+                                <form class="form-horizontal" action="/licence/register" method="post" id="licence_form">
                                     <div class="box-body">
 
                                         <div class="form-group">
@@ -56,7 +56,7 @@
                                             <label for="inputEmail3" class="col-sm-2 col-xs-2 control-label">Thời hạn thẻ</label>
 
                                             <div class="col-sm-9 col-xs-8">
-                                                <input type="text" class="form-control" name="type" id="inputEmail3" placeholder="Thời hạn thẻ">
+                                                <input type="text" class="form-control" name="due_to" id="inputEmail3" placeholder="Thời hạn thẻ">
                                             </div>
 
                                         </div>
@@ -89,5 +89,31 @@
     <%  include ../layout/footer %>
 </div>
 <% include ../layout/script %>
+<script>
+    $('#licence_form').submit(function (e) {
+        e.preventDefault();
+        var url = $(this).attr('action');
+        var data = {
+            id: $('input[name="id"]').val(),
+            type: $('input[name="type"]').val(),
+            due_date: $('input[name="due_date"]').val(),
+            authority: $('input[name="authority"]').val(),
+            username: JSON.parse(localStorage.getItem('username')),
+            token: JSON.parse(localStorage.getItem('token')),
+        };
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
 </body>
 </html>

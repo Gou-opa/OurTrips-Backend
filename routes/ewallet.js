@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Account = require('../business_flow/user/account');
-const Bank = require('../business_flow/user/ewallet');
+const Account = require('../core/business_flow/user/account');
+const Bank = require('../core/business_flow/user/ewallet');
 
 router.get('/', function(req, res){
     res.render('./component/ewallet/ewallet.ejs');

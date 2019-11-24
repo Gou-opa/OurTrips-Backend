@@ -36,11 +36,12 @@ $('#register_form').submit(function (e) {
             nationality: $("input[name='nationality']").val(),
         },
         dataType: "json",
-        contentType: 'application/json; charset=utf-8',
-        success: function(response) {
-            console.log(response);
+
+        success: function() {
+            window.location.assign("/");
         },
-        error: function (error) {
+        error: function (xhr, textStatus, error) {
+            console.log(xhr.status);
             console.log(error);
         }
     });
