@@ -1,7 +1,14 @@
 
 <div class="login-container">
     <div class="action-form">
-        <form action="/user/login" method="post" id="login_form">
+        <form id="login_form" onsubmit = "return form_submit('/user/login', 'login_form', function(response){
+            console.log(response);
+            localStorage.setItem('token', JSON.stringify(response.token));
+            console.log(JSON.parse(localStorage.getItem('token')));
+            if(response.hasOwnProperty('token')) {
+                window.location.assign('/home');
+            }
+        })">
         <h2>Welcome</h2>
         <div class="input-div one">
             <div class="i">
@@ -9,7 +16,7 @@
             </div>
             <div>
                 <h5>Username</h5>
-                <input type="text" name="username" class="input">
+                <input type="text" name="username" class="input" id="username">
 
             </div>
 
@@ -35,9 +42,10 @@
             </label>
             <label for="cb" class="remember">Remember Me!</label>
         </div>
-        <a id="forgot" href="/forgot-password">Forgot Password</a>
+
         <input type="submit" value="Login" class="btn">
-    </form>  
+    </form>
+        <a id="forgot" href="/forgot-password">Forgot Password</a>
         <p style="color:#999">OR</p>
         <a href="/register"><button class="btn">Signup</button></a>
     </div>

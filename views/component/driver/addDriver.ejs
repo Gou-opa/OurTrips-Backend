@@ -19,6 +19,7 @@
             </ol>
             <hr>
         </section>
+        <div id="message"></div>
 
         <!-- Main content -->
         <section class="content">
@@ -55,25 +56,27 @@
                                         </div>
                                     </div>
                                 </div>
-                        <form class="form-horizontal" action="/vehicle" method="post">
+                        <form class="form-horizontal" action="/driver/register" method="post" id="addDriver_form">
                             <input type="hidden" name="city" id="value-city">
                             <input type="hidden" name="district" id="value-district">
+                            <input type="hidden" id="username">
+                            <input type="hidden" id="token">
                             <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2  control-label">Address 1</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="address-1" id="inputEmail3" placeholder="Địa chỉ 1">
+                                    <input type="text" class="form-control" name="address_line1" id="address_line1" placeholder="Địa chỉ 1">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2  control-label">Address 2</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="address-2" id="inputEmail3" placeholder="Địa chỉ 2">
+                                    <input type="text" class="form-control" name="address_line2" id="address_line2" placeholder="Địa chỉ 2">
                                 </div>
                             </div>
                             <div class="box-footer" align="center">
-                                <button type="submit" class="btn btn-primary bg-color">
+                                <button type="submit" class="btn btn-primary bg-color" id="addform">
                                     Thêm tài xế
                                 </button>
                             </div>
@@ -90,5 +93,35 @@
 </div>
 <% include ../layout/script %>
 <script src="/custom/dropdownlist.js"></script>
+<script>
+    $('#addDriver_form').submit(function(e){
+        e.preventDefault();
+
+        var username = JSON.parse(localStorage.getItem('username'));
+        var token = JSON.parse(localStorage.getItem('token'));
+        var url = $(this).attr('action');
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                city: $('#value-city').val(),
+                district: $('#value-district').val(),
+                address_line1: $('#address_line1').val(),
+                address_line2: $('#address_line2').val(),
+                username: username,
+                token: token
+            },
+            dataType: 'json',
+            success: function () {
+               setTimeout(function() {
+                   $('#message').append('<div class="alert alert-success alert-block"> <strong>Thêm thành công</strong> </div>');
+               }, 3000);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+});
+</script>
 </body>
 </html>

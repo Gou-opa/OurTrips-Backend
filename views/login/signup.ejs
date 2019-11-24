@@ -31,7 +31,8 @@
                     </div>
                     <div>
                         <h5>Giới tính</h5>
-                        <input type="text" name="gender" class="input">
+                        <input type="radio" name="gender" value="1" class="checkbox-gender" checked><span class="span-text">Nam</span>
+                        <input type="radio" name="gender" value="0" class="checkbox-gender"><span class="span-text">Nữ</span>
                     </div>
                 </div>
                     <p id="gender"></p>
@@ -101,22 +102,9 @@
                     </div>
                 </div>
                     <p id="password"></p>
-                
-                <div class="input-div two">
-                    <div class="i">
-                        <i class="fa fa-lock" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h5>Re - Password</h5>
-                        <input type="password" name="password_confirmation" class="input">
-                    </div>
-                </div>
-                    <p id="password_confirmation"></p>
 
-                <input type="hidden" name="role" value="">
-                    <a id="forgot" href="/">Đã có tài khoản, hãy đăng nhập!</a>
-                
                 <input type="submit" value="Sign up" class="btn">
             </form>
+                <a id="forgot" href="/">Đã có tài khoản, hãy đăng nhập!</a>
             </div>
         </div>

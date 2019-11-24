@@ -257,7 +257,20 @@ a#forgot:hover {
     font-size: 14px;
     margin-top: 20px;
 }
+.checkbox-gender {
+    width: 30px;
+    height: 17px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
 
+.span-text {
+    position: relative;
+    top: -2px;
+    font-size: 14px;
+    left: 10px;
+    color: #999;
+}
 
 @media screen and (max-width: 1050px) {
     .container {

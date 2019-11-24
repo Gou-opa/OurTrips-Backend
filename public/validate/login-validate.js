@@ -47,18 +47,18 @@ $("#register_form").validate({
         },
         tel: {
             required: true,
-            number: true
+
         },
         nationality: {
             required: true,
         },
         password: {
             required: true,
-            min: 6
+            minlength: 6
         },
         password_confirmation: {
             required: true,
-            equalTo: '#password',
+
         },
 
     },
@@ -86,7 +86,7 @@ $("#register_form").validate({
         },
         tel: {
             required: "* Bạn chưa nhập số điện thoại",
-            number: "* Bạn phải nhập đúng định dạng"
+
         },
         nationality: {
             required: "* Bạn chưa nhập quốc tịch",
