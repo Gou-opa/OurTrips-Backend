@@ -1,6 +1,6 @@
 <% include ../layout/head %>
 
-<body class="hold-transition skin-purple fixed sidebar-mini" >
+<body class="hold-transition skin-purple fixed sidebar-mini" onload="load_ewalet()">
 <div class="wrapper" >
     <!-- header -->
     <% include ../layout/header %>
@@ -98,6 +98,7 @@
                                     <div style="padding: 10px;">
                                         <div class="box-header">
                                             <h3 class="box-title"><b>Các ví đã thêm</b></h3>
+                                            <button id="reload" onclick="load_ewalet()" class="btn bg-primary bg-color pull-right"><i class="fa fa-refresh"></i></button>
                                         </div>
                                         <table class="table tale-hover table-bordered" id="show_ewallet">
                                             <thead>

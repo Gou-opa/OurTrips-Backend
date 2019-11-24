@@ -23,43 +23,46 @@ $(".btn-show1").on('click',function(){
 });
 
 
-   $.ajax({
-       url: '/ewallet/fetch',
-       type: 'post',
-       dataType: 'json',
-       data: {
-           username: JSON.parse(localStorage.getItem('username')),
-           token: JSON.parse(localStorage.getItem('token')),
-           max: '',
-           filter: ['acountNumber'],
-       },
-       success: function(response) {
-           var html = '';
-           var array = response.requests;
-           var count = 1;
-           $.each(array, function(key, val){
-               html += '<tr>';
-               html += '<td width="5%" align="center">'+ count +'</td>';
-               html += '<td width="25%">'+ val.user_id + '</td>';
-               html += '<td width="25%">'+ val.accountNumber + '</td>';
-               html += '<td width="25%">'+ val.vendor + '</td>';
-               html += '<td width="20%" align="center">\n' +
-                   '<div class="btn-group">\n' +
-                   '<button type="button" class="btn btn-primary bg-color" data-toggle="modal" data-target="#modal-default2">\n' +
-                   'Chi tiết\n' +
-                   '</button>\n' +
-                   '<button type="button" class="btn btn-primary bg-color">\n' +
-                   'Xóa\n' +
-                   '</button>\n' +
-                   '</div>\n' +
-                   '</td>';
-               html += '</tr>';
-               $('#show_ewallet').find('tbody').html(html);
-               count++;
-           });
+function load_ewalet() {
+    $.ajax({
+        url: '/ewallet/fetch',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            username: JSON.parse(localStorage.getItem('username')),
+            token: JSON.parse(localStorage.getItem('token')),
+            max: '',
+            filter: ['acountNumber'],
+        },
+        success: function(response) {
+            var html = '';
+            var array = response.requests;
+            var count = 1;
+            $.each(array, function(key, val){
+                html += '<tr>';
+                html += '<td width="5%" align="center">'+ count +'</td>';
+                html += '<td width="25%">'+ val.user_id + '</td>';
+                html += '<td width="25%">'+ val.accountNumber + '</td>';
+                html += '<td width="25%">'+ val.vendor + '</td>';
+                html += '<td width="20%" align="center">\n' +
+                    '<div class="btn-group">\n' +
+                    '<button type="button" class="btn btn-primary bg-color" data-toggle="modal" data-target="#modal-default2">\n' +
+                    'Chi tiết\n' +
+                    '</button>\n' +
+                    '<button type="button" class="btn btn-primary bg-color">\n' +
+                    'Xóa\n' +
+                    '</button>\n' +
+                    '</div>\n' +
+                    '</td>';
+                html += '</tr>';
+                $('#show_ewallet').find('tbody').html(html);
+                count++;
+            });
 
-       }
-   });
+        }
+    });
+
+}
 
 
 
