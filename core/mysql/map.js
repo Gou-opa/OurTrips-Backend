@@ -205,7 +205,7 @@ module.exports.enable_share = function(details, onSuccessCallback, onFailureCall
                 function(err, result) {
                     if(err) onFailureCallback(err);
                     else {
-                        details.route = Map.route.get_route(JSON.parse(trip.route)).geometry;
+                        details.route = Map.route.get(JSON.parse(trip.route), "Route").geometry;
                         create_share_details(details, onSuccessCallback, onFailureCallback);
                     }
                 }
@@ -294,7 +294,7 @@ module.exports.start = function(details, onSuccessCallback, onStarted, onFailure
                     if(err) onFailureCallback(err);
                     else if(result.changedRows) {
                         join_trip(
-                            {trip_id: trip_id, driver_id: driver_id},
+                            {trip_id: trip_id, driver_id: trip_driver.driver_id},
                             function (join_result) {
                                 onSuccessCallback(join_result);
                             }, onFailureCallback
