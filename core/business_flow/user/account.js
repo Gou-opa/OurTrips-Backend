@@ -5,7 +5,8 @@ const SessionManager = require('../../mysql/session');
 const UserManager = require('../../mysql/user');
 const url = require('url');
 const Map = require('../map/geojson');
-
+const Trip = require('./../map/trip');
+const TripManager = require('./../../mysql/map');
 module.exports.Verify = function (user_info, req, res) {
     var form = req.body;
     let action_permission;
@@ -153,10 +154,29 @@ module.exports.ConfirmUser = (confirm_form, req, res) => {
 
 module.exports.SetLocation = (user_pack, req, res) => {
     let location = req.body.location;
+    let user_id = user_pack.username;
     UserManager.set_location(
-        {username: user_pack.username, location: location},
+        {user_id: user_id, location: location},
         function (result) {
-            res.status(200).json({new:location});
+            Trip.is_driver_has_trip(
+                user_id,
+                function (trip_driver_info) {
+                    TripManager.check_destination(
+                        {driver_id: user_id, trip_id: trip_driver_info.id, vehicle_id: trip_driver_info.vehicle_id},
+                        function (result) {
+                            res.status(200).json({new:location, message: "Trip completed"});
+                        },
+                        function(){
+                            res.status(200).json({new:location});
+                        },
+                        function (err) {
+                            res.status(500).json({"Error": err.message});
+                        })
+                },
+                function () {
+                    res.status(200).json({new:location});
+                }
+            );
         },
         function (err){
             res.status(500).json({ "Error": err.message});

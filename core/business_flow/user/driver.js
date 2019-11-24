@@ -17,6 +17,20 @@ module.exports.register = function (user_info, req, res) {
         }
     )
 };
+module.exports.on_vehicle = function (user_info, req, res) {
+    let vehicle_id = req.body.vehicle;
+    let driver_id = user_info.username;
+    UserManager.on_vehicle(
+        {vehicle_id: vehicle_id, id: driver_id},
+        function () {
+            res.status(200).json({"message": "Ok"})
+        },
+        function (err) {
+            utils.identify("Regist driver error", [register_form, err]);
+            res.status(500).json({ "Error": err.message});
+        }
+    )
+};
 
 module.exports.use_own_vehicle = function (user_info, req, res) {
     let {trip, vehicle} = req.body;

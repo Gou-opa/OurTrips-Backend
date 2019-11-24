@@ -31,13 +31,13 @@ module.exports.use_own_vehicle = function (details, onSuccessCallback, onNotFoun
                 item++;
                 if (vehicle.id == vehicle_id) {
                     pool.query(
-                        "UPDATE trip SET vehicle_id = ? WHERE id = ? and vehicle_id = null",
+                        "UPDATE trip SET vehicle_id = ?, state = 'HOST' WHERE id = ? and vehicle_id is null",
                         [vehicle_id, trip_id],
-                        function (err, result) {
+                        function (err, host_result) {
                             if (err) onFailureCallback(err);
                             else {
-                                utils.identify("store driver", result);
-                                if(result.affectedRows) onSuccessCallback(result);
+                                utils.identify("host result", host_result);
+                                if(host_result.affectedRows) onSuccessCallback(host_result);
                                 else onNotFound()
                             }
                         }
