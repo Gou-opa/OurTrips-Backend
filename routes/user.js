@@ -26,6 +26,9 @@ router.post('/logout', function (req, res) {
 router.put('/location', function (req, res) {
     Account.AuthenThen(Account.SetLocation, req, res);
 });
+router.post('/pay', function (req, res) {
+    Account.AuthenThen(Trip.pay, req, res);
+});
 /* legacy part */
 router.post('/check_role', function (req, res) {
     Account.AuthenThen(Account.Verify, req, res);

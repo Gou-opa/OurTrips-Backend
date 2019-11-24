@@ -32,6 +32,33 @@ module.exports.charge = function (user_info, req, res) {
         );
     }
 };
+module.exports.receive = function (details, onSuccessCallback, onNotFound, onLowerThanZero, onFailureCallback) {
+    let {accountNumber, amount, user_id} = details;
+    if (amount < 0) onFailureCallback({"Error" : "Negative amount"});
+    else {
+
+        BankManagement.increase(
+            {accountNumber: accountNumber, user_id: user_id, amount: amount},
+            onSuccessCallback,
+            onNotFound,
+            onLowerThanZero,
+            onFailureCallback
+        );
+    }
+};
+module.exports.pay = function (details, onSuccessCallback, onNotFound, onLowerThanZero, onFailureCallback) {
+    let {accountNumber, amount, user_id} = details;
+    if (amount < 0) onFailureCallback({"Error" : "Negative amount"});
+    else {
+        BankManagement.decrease(
+            {accountNumber: accountNumber, user_id: user_id, amount: amount},
+            onSuccessCallback,
+            onNotFound,
+            onLowerThanZero,
+            onFailureCallback
+        );
+    }
+};
 module.exports.withdraw = function (user_info, req, res) {
     let {accountNumber, amount} = req.body;
     if (amount < 0) res.status(403).json({"Error" : "Negative amount"});
@@ -93,9 +120,21 @@ module.exports.fetch = function (user_info, req, res) {
         res.status(500).json({ Error: err});
     };
     BankManagement.fetch_own(
-        {user_id: user_info.info.username, max: max},
+        {user_id: user_info.username, max: max},
         doFilter,
         onError
+    );
+};
+module.exports.get_default_ewallet = function (user_id, onSuccessCallback, onFailureCallback) {
+    BankManagement.fetch_own(
+        {user_id: user_id, max: 1},
+        function (ewallet){
+            onSuccessCallback(ewallet[0]);
+        },
+        function (err) {
+            utils.identify("fetch err", err);
+            onFailureCallback(err)
+        }
     );
 };
 module.exports.get = function (user_info, req, res) {

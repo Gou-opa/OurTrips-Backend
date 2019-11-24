@@ -7,7 +7,7 @@ const Map = require('./../business_flow/map/geojson');
 const world_popular_points = JSON.parse(fs.readFileSync('../core/business_flow/map/world_popular_points.json', 'utf8'));
 console.log("World points contains", world_popular_points.features.length, "points");
 const Turf = require('@turf/turf');
-
+const Bank = require('../business_flow/user/ewallet');
 
 module.exports.invite_driver = function(details, onSuccessCallback, onFailureCallback){
     let {trip_id, vehicle_id} = details;
@@ -119,6 +119,55 @@ module.exports.fetch = function (details, onSuccessCallback, onFailureCallback) 
                         },
                         onFailureCallback
                     );
+                },
+                onFailureCallback
+            )
+        }, onFailureCallback
+    );
+};
+module.exports.pay = function (details, onSuccessCallback, onFailureCallback) {
+    let {user_id, trip_id, accountNumber} = details;
+    is_on_trip(
+        {picked_user_id: user_id, trip_id: trip_id},
+        function (on_trip) {
+            nSafe_get_current_trip(
+                trip_id,
+                function (trip_driver){
+                    let amount = trip_driver.whole_trip_price;
+                    Bank.pay(
+                        {accountNumber:accountNumber, amount:amount, user_id:user_id},
+                        function () {
+                            let driver_id = trip_driver.driver_id;
+                            Bank.get_default_ewallet(
+                                driver_id,
+                                function (ewallet) {
+                                    Bank.receive(
+                                        {accountNumber: ewallet.accountNumber, amount: amount, user_id: driver_id},
+                                        function () {
+                                            if (trip_driver.owner_id == user_id) {
+                                                nSafe_paid(trip_id,
+                                                    onSuccessCallback,
+                                                    onFailureCallback);
+                                            }
+                                            else onSuccessCallback();
+                                        },
+                                        function () {
+                                            onFailureCallback({"Error": "accountNumber not found"});
+                                        },
+                                        function () {
+                                            onFailureCallback({'Error': "Withdraw failed, lower than 0"});
+                                        }
+                                    );
+                                }, onFailureCallback
+                            )
+                        },
+                        function () {
+                            onFailureCallback({"Error": "accountNumber not found"});
+                        },
+                        function () {
+                            onFailureCallback({'Error': "Withdraw failed, lower than 0"});
+                        }
+                    )
                 },
                 onFailureCallback
             )
@@ -256,6 +305,16 @@ module.exports.start = function(details, onSuccessCallback, onStarted, onFailure
             );
         },
         onFailureCallback
+    );
+};
+const nSafe_paid = function(trip_id, onSuccessCallback, onStarted, onFailureCallback){
+    pool.query(
+        "UPDATE trip SET state = 'PAID' WHERE id = ? and state != 'PAID'",
+        [trip_id],
+        function(err, result) {
+            if(err) onFailureCallback(err);
+            else onSuccessCallback();
+        }
     );
 };
 

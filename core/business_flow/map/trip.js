@@ -67,6 +67,19 @@ module.exports.dropoff = function (user_info, req, res) {
         }
     )
 };
+module.exports.pay = function (user_info, req, res) {
+    var {trip, accountNumber} = req.body;
+    TripManager.pay(
+        {user_id: user_info.username, trip_id: trip, accountNumber: accountNumber},
+        function () {
+            res.status(200).json({"status": "paid"});
+        },
+        function (err) {
+            utils.identify("pay trip error", err);
+            res.status(500).json({ "Error": err.message});
+        }
+    )
+};
 
 module.exports.get = function (user_info, req, res) {
     var {trip,filter} = req.body;
