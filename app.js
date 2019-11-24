@@ -23,8 +23,6 @@ var indexRouter = require('./routes');
 app.use('/', indexRouter);
 var userRouter = require('./routes/user');
 app.use('/user', userRouter);
-var vehicleRoute = require('./routes/vehicle');
-app.use('/vehicle', vehicleRoute);
 var driverRoute = require('./routes/driver');
 app.use('/driver', driverRoute);
 var licenceRoute = require('./routes/licence');

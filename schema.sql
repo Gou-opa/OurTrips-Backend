@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `ourtrips` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE  IF NOT EXISTS `ourtrips` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `ourtrips`;
 -- MySQL dump 10.13  Distrib 8.0.17, for Win64 (x86_64)
 --
@@ -17,13 +17,13 @@ USE `ourtrips`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
-
+SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
 -- GTID state at the beginning of the backup 
 --
 
-
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '';
 
 --
 -- Table structure for table `discount`
@@ -55,8 +55,11 @@ CREATE TABLE `driver` (
   `district` varchar(45) NOT NULL,
   `address_line1` text NOT NULL,
   `address_line2` text,
+  `on_vehicle` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `driver_vehicle_work_fk_idx` (`on_vehicle`),
+  CONSTRAINT `driver_vehicle_work_fk` FOREIGN KEY (`on_vehicle`) REFERENCES `vehicle` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -109,8 +112,61 @@ CREATE TABLE `ewallet` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `ewallet_user_fk_idx` (`user_id`),
   CONSTRAINT `ewallet_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `invitations`
+--
+
+DROP TABLE IF EXISTS `invitations`;
+/*!50001 DROP VIEW IF EXISTS `invitations`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `invitations` AS SELECT 
+ 1 AS `trip_id`,
+ 1 AS `owner_id`,
+ 1 AS `discount_id`,
+ 1 AS `payment_id`,
+ 1 AS `whole_trip_price`,
+ 1 AS `avg_price`,
+ 1 AS `route`,
+ 1 AS `road_length`,
+ 1 AS `inviting_vehicle`,
+ 1 AS `vehicle_id`,
+ 1 AS `brand`,
+ 1 AS `type`,
+ 1 AS `vehicle_name`,
+ 1 AS `engine_cap`,
+ 1 AS `color`,
+ 1 AS `gross_ton`,
+ 1 AS `total_weight`,
+ 1 AS `n_passengers`,
+ 1 AS `pic_l`,
+ 1 AS `pic_r`,
+ 1 AS `pic_f`,
+ 1 AS `pic_rr`,
+ 1 AS `approval_status`,
+ 1 AS `approval_due_date`,
+ 1 AS `trip_open_price`,
+ 1 AS `trip_price`,
+ 1 AS `wait_price`,
+ 1 AS `driver_id`,
+ 1 AS `employee_id`,
+ 1 AS `city`,
+ 1 AS `district`,
+ 1 AS `address_line1`,
+ 1 AS `address_line2`,
+ 1 AS `driver_name`,
+ 1 AS `gender`,
+ 1 AS `dob`,
+ 1 AS `email`,
+ 1 AS `address`,
+ 1 AS `tel`,
+ 1 AS `nationality`,
+ 1 AS `potrait_img_url`,
+ 1 AS `location`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `licence`
@@ -134,6 +190,22 @@ CREATE TABLE `licence` (
   KEY `licence_employee_fk_idx` (`employee_id`),
   CONSTRAINT `licence_driver_fk` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `licence_employee_fk` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `on_trip`
+--
+
+DROP TABLE IF EXISTS `on_trip`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `on_trip` (
+  `user_id` varchar(255) NOT NULL,
+  `trip_id` int(11) NOT NULL,
+  `geton_location` point DEFAULT NULL,
+  `getoff_location` point DEFAULT NULL,
+  PRIMARY KEY (`user_id`,`trip_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -216,7 +288,7 @@ CREATE TABLE `session` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `session_user_fk_idx` (`username`),
   CONSTRAINT `session_user_fk` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,12 +301,12 @@ DROP TABLE IF EXISTS `share_route_details`;
 CREATE TABLE `share_route_details` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
   `trip_id` int(11) NOT NULL,
-  `route` json NOT NULL,
-  `price` int(12) NOT NULL,
+  `route` linestring NOT NULL,
+  `avg_price` int(12) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `shareroute_trip_fk` (`trip_id`),
   CONSTRAINT `shareroute_trip_fk` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,6 +326,10 @@ CREATE TABLE `trip` (
   `open_price` int(12) DEFAULT NULL,
   `avg_price` int(12) DEFAULT NULL,
   `route` json NOT NULL,
+  `inviting_vehicle` int(11) DEFAULT NULL,
+  `road_length` float(4,3) DEFAULT NULL,
+  `share` tinyint(4) NOT NULL,
+  `state` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `trip_owner_fk_idx` (`owner_id`),
   KEY `trip_vehicle_fk_idx` (`vehicle_id`),
@@ -263,6 +339,47 @@ CREATE TABLE `trip` (
   CONSTRAINT `trip_vehicle_fk` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `trip_driver`
+--
+
+DROP TABLE IF EXISTS `trip_driver`;
+/*!50001 DROP VIEW IF EXISTS `trip_driver`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `trip_driver` AS SELECT 
+ 1 AS `driver_id`,
+ 1 AS `city`,
+ 1 AS `district`,
+ 1 AS `address_line1`,
+ 1 AS `address_line2`,
+ 1 AS `on_vehicle`,
+ 1 AS `username`,
+ 1 AS `name`,
+ 1 AS `gender`,
+ 1 AS `dob`,
+ 1 AS `email`,
+ 1 AS `address`,
+ 1 AS `tel`,
+ 1 AS `nationality`,
+ 1 AS `role`,
+ 1 AS `potrait_img_url`,
+ 1 AS `location`,
+ 1 AS `id`,
+ 1 AS `owner_id`,
+ 1 AS `discount_id`,
+ 1 AS `vehicle_id`,
+ 1 AS `payment_id`,
+ 1 AS `whole_trip_price`,
+ 1 AS `open_price`,
+ 1 AS `avg_price`,
+ 1 AS `route`,
+ 1 AS `inviting_vehicle`,
+ 1 AS `road_length`,
+ 1 AS `share`,
+ 1 AS `state`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `trip_review`
@@ -298,9 +415,38 @@ CREATE TABLE `user` (
   `nationality` varchar(255) NOT NULL,
   `role` varchar(45) NOT NULL,
   `potrait_img_url` varchar(255) DEFAULT NULL,
+  `location` point DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `user_driver`
+--
+
+DROP TABLE IF EXISTS `user_driver`;
+/*!50001 DROP VIEW IF EXISTS `user_driver`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `user_driver` AS SELECT 
+ 1 AS `id`,
+ 1 AS `city`,
+ 1 AS `district`,
+ 1 AS `address_line1`,
+ 1 AS `address_line2`,
+ 1 AS `on_vehicle`,
+ 1 AS `username`,
+ 1 AS `name`,
+ 1 AS `gender`,
+ 1 AS `dob`,
+ 1 AS `email`,
+ 1 AS `address`,
+ 1 AS `tel`,
+ 1 AS `nationality`,
+ 1 AS `role`,
+ 1 AS `potrait_img_url`,
+ 1 AS `location`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `vehicle`
@@ -336,7 +482,53 @@ CREATE TABLE `vehicle` (
   KEY `vehicle_employee_fk_idx` (`employee_id`),
   CONSTRAINT `vehicle_driver_fk` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `vehicle_employee_fk` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `working_driver`
+--
+
+DROP TABLE IF EXISTS `working_driver`;
+/*!50001 DROP VIEW IF EXISTS `working_driver`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `working_driver` AS SELECT 
+ 1 AS `driver_id`,
+ 1 AS `city`,
+ 1 AS `district`,
+ 1 AS `address_line1`,
+ 1 AS `address_line2`,
+ 1 AS `on_vehicle`,
+ 1 AS `username`,
+ 1 AS `name`,
+ 1 AS `gender`,
+ 1 AS `dob`,
+ 1 AS `email`,
+ 1 AS `address`,
+ 1 AS `tel`,
+ 1 AS `nationality`,
+ 1 AS `role`,
+ 1 AS `potrait_img_url`,
+ 1 AS `location`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `world_points`
+--
+
+DROP TABLE IF EXISTS `world_points`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `world_points` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `admin` varchar(255) DEFAULT NULL,
+  `scalerank` int(11) DEFAULT NULL,
+  `datarank` int(11) DEFAULT NULL,
+  `coords` point NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,6 +539,78 @@ CREATE TABLE `vehicle` (
 -- Dumping routines for database 'ourtrips'
 --
 
+--
+-- Final view structure for view `invitations`
+--
+
+/*!50001 DROP VIEW IF EXISTS `invitations`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ourtrips_be`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `invitations` AS select `t`.`id` AS `trip_id`,`t`.`owner_id` AS `owner_id`,`t`.`discount_id` AS `discount_id`,`t`.`payment_id` AS `payment_id`,`t`.`whole_trip_price` AS `whole_trip_price`,`t`.`avg_price` AS `avg_price`,`t`.`route` AS `route`,`t`.`road_length` AS `road_length`,`t`.`inviting_vehicle` AS `inviting_vehicle`,`v`.`id` AS `vehicle_id`,`v`.`brand` AS `brand`,`v`.`type` AS `type`,`v`.`name` AS `vehicle_name`,`v`.`engine_cap` AS `engine_cap`,`v`.`color` AS `color`,`v`.`gross_ton` AS `gross_ton`,`v`.`total_weight` AS `total_weight`,`v`.`n_passengers` AS `n_passengers`,`v`.`pic_l` AS `pic_l`,`v`.`pic_r` AS `pic_r`,`v`.`pic_f` AS `pic_f`,`v`.`pic_rr` AS `pic_rr`,`v`.`approval_status` AS `approval_status`,`v`.`approval_due_date` AS `approval_due_date`,`v`.`open_price` AS `trip_open_price`,`v`.`trip_price` AS `trip_price`,`v`.`wait_price` AS `wait_price`,`v`.`driver_id` AS `driver_id`,`v`.`employee_id` AS `employee_id`,`d`.`city` AS `city`,`d`.`district` AS `district`,`d`.`address_line1` AS `address_line1`,`d`.`address_line2` AS `address_line2`,'d.name' AS `driver_name`,'d.gender' AS `gender`,'d.dob' AS `dob`,'d.email' AS `email`,'d.address' AS `address`,'d.tel' AS `tel`,'d.nationality' AS `nationality`,'d.potrait_img_url' AS `potrait_img_url`,'d.location' AS `location` from ((`trip` `t` join `vehicle` `v` on((`t`.`inviting_vehicle` = `v`.`id`))) join `driver` `d` on((`d`.`id` = `v`.`driver_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `trip_driver`
+--
+
+/*!50001 DROP VIEW IF EXISTS `trip_driver`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ourtrips_be`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `trip_driver` AS select `w`.`driver_id` AS `driver_id`,`w`.`city` AS `city`,`w`.`district` AS `district`,`w`.`address_line1` AS `address_line1`,`w`.`address_line2` AS `address_line2`,`w`.`on_vehicle` AS `on_vehicle`,`w`.`username` AS `username`,`w`.`name` AS `name`,`w`.`gender` AS `gender`,`w`.`dob` AS `dob`,`w`.`email` AS `email`,`w`.`address` AS `address`,`w`.`tel` AS `tel`,`w`.`nationality` AS `nationality`,`w`.`role` AS `role`,`w`.`potrait_img_url` AS `potrait_img_url`,`w`.`location` AS `location`,`t`.`id` AS `id`,`t`.`owner_id` AS `owner_id`,`t`.`discount_id` AS `discount_id`,`t`.`vehicle_id` AS `vehicle_id`,`t`.`payment_id` AS `payment_id`,`t`.`whole_trip_price` AS `whole_trip_price`,`t`.`open_price` AS `open_price`,`t`.`avg_price` AS `avg_price`,`t`.`route` AS `route`,`t`.`inviting_vehicle` AS `inviting_vehicle`,`t`.`road_length` AS `road_length`,`t`.`share` AS `share`,`t`.`state` AS `state` from (`working_driver` `w` join `trip` `t` on((`w`.`on_vehicle` = `t`.`vehicle_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `user_driver`
+--
+
+/*!50001 DROP VIEW IF EXISTS `user_driver`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ourtrips_be`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `user_driver` AS select `d`.`id` AS `id`,`d`.`city` AS `city`,`d`.`district` AS `district`,`d`.`address_line1` AS `address_line1`,`d`.`address_line2` AS `address_line2`,`d`.`on_vehicle` AS `on_vehicle`,`u`.`username` AS `username`,`u`.`name` AS `name`,`u`.`gender` AS `gender`,`u`.`dob` AS `dob`,`u`.`email` AS `email`,`u`.`address` AS `address`,`u`.`tel` AS `tel`,`u`.`nationality` AS `nationality`,`u`.`role` AS `role`,`u`.`potrait_img_url` AS `potrait_img_url`,`u`.`location` AS `location` from (`driver` `d` join `user` `u` on((`d`.`id` = `u`.`username`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `working_driver`
+--
+
+/*!50001 DROP VIEW IF EXISTS `working_driver`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ourtrips_be`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `working_driver` AS select `user_driver`.`id` AS `driver_id`,`user_driver`.`city` AS `city`,`user_driver`.`district` AS `district`,`user_driver`.`address_line1` AS `address_line1`,`user_driver`.`address_line2` AS `address_line2`,`user_driver`.`on_vehicle` AS `on_vehicle`,`user_driver`.`username` AS `username`,`user_driver`.`name` AS `name`,`user_driver`.`gender` AS `gender`,`user_driver`.`dob` AS `dob`,`user_driver`.`email` AS `email`,`user_driver`.`address` AS `address`,`user_driver`.`tel` AS `tel`,`user_driver`.`nationality` AS `nationality`,`user_driver`.`role` AS `role`,`user_driver`.`potrait_img_url` AS `potrait_img_url`,`user_driver`.`location` AS `location` from `user_driver` where (`user_driver`.`on_vehicle` is not null) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -357,4 +621,4 @@ CREATE TABLE `vehicle` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-18  3:07:46
+-- Dump completed on 2019-11-24 22:03:41
