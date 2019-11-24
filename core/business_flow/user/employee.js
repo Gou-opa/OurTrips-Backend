@@ -1,35 +1,29 @@
-const EmployeeManager = require('../../core/mysql/employee');
-const LicenceManager = require('../../core/mysql/licence');
-const VehicleManager = require('../../core/mysql/vehicle');
-const cognito = require('../../core/aws/coginito');
-const utils = require('../../core/utils/utils');
-const secret = require('../../config/server_secret').secret.hex.secret;
+const EmployeeManager = require('../../mysql/employee');
+const LicenceManager = require('../../mysql/licence');
+const VehicleManager = require('../../mysql/vehicle');
+const cognito = require('../../aws/coginito');
+const utils = require('../../utils/utils');
+const secret = require('../../../config/server_secret').secret.hex.secret;
+const UserManager = require('../../mysql/user');
 
-module.exports.Grant = function (admin_infopack, req, res){
+module.exports.Grant = function (admin_login_result, req, res){
     let grant_form = req.body;
-
-    if (grant_form.secret == secret){
-        cognito.LoginUser(grant_form,
-            function (credential, cognitoUser) {
-                cognito.updateAttributes(cognitoUser, {Name: "custom:role", Value: grant_form.role},
-                    function (result) {
-                        res.status(200).json({'result' : result});
-                    },
-                    function (err) {
-                        utils.identify("Update role error", [grant_form, err]);
-                        res.status(500).json({ "Error": err.message});
-                    }
-                );
-            },
-            function (err) {
-                utils.identify("Authen error", [grant_form, err]);
-                if (err.message === 'Incorrect username or password.') res.status(401).json({"Error": err.message});
-                else res.status(500).json({ "Error": err.message});
-            }
-        );
-    } else {
-        res.status(403).json({ "Error": "Secret wrong !"});
-    }
+    if (admin_login_result.Role == 'admin') {
+        if (grant_form.secret == secret) {
+            UserManager.grant(
+                {username: grant_form.for_user, role: grant_form.role},
+                function (result) {
+                    res.status(200).json({'granted': result.changedRows});
+                },
+                function (err) {
+                    utils.identify("Update role error", [grant_form, err]);
+                    res.status(500).json({"Error": err.message});
+                }
+            );
+        } else {
+            res.status(403).json({"Error": "Secret wrong !"});
+        }
+    } else res.status(403).json({"Error": "Not authorized as admin"});
 
 };
 module.exports.Approve = function(employee_info, req, res) {
@@ -37,7 +31,7 @@ module.exports.Approve = function(employee_info, req, res) {
     switch (type) {
         case "vehicle": {
             VehicleManager.approve(
-                {id: id, employee_id: employee_info.info.sub},
+                {id: id, employee_id: employee_info.info.username},
                 function (result) {
                     utils.identify("approve", result);
                     res.status(200).json({"message": "Approved"});
@@ -51,7 +45,7 @@ module.exports.Approve = function(employee_info, req, res) {
         }
         case "licence": {
             LicenceManager.approve(
-                {id: id, employee_id: employee_info.info.sub},
+                {id: id, employee_id: employee_info.info.username},
                 function (result) {
                     utils.identify("approve", result);
                     res.status(200).json({"message": "Approved"});
@@ -61,9 +55,11 @@ module.exports.Approve = function(employee_info, req, res) {
                     res.status(500).json({message: "Some error happened"});
                 }
             );
+            break;
         }
         default: {
             res.status(400).json({message: "Mismatch type"});
+            break;
         }
     }
 };
@@ -98,7 +94,7 @@ module.exports.Fetch_vehicles = function(employee_info, req, res) {
 
 module.exports.register = function (employee_info, req, res) {
     let register_form = req.body;
-    register_form.id = employee_info.info.sub;
+    register_form.id = employee_info.info.username;
     EmployeeManager.register(register_form,
         function () {
             res.status(200).json({"message": "Ok"})

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Account = require('../business_flow/user/account');
-const Trip = require('../business_flow/trip/trip');
+const Account = require('../core/business_flow/user/account');
+const Trip = require('../core/business_flow/map/trip');
 
 router.get('/profile', function (req, res) {
    res.render('./component/account/information.ejs');
@@ -26,6 +26,12 @@ router.post('/confirm', function (req, res) {
 });
 router.post('/logout', function (req, res) {
     Account.AuthenThen(Account.LogOut, req, res);
+});
+router.put('/location', function (req, res) {
+    Account.AuthenThen(Account.SetLocation, req, res);
+});
+router.post('/pay', function (req, res) {
+    Account.AuthenThen(Trip.pay, req, res);
 });
 /* legacy part */
 router.post('/check_role', function (req, res) {

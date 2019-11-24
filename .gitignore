@@ -5,7 +5,7 @@
 config/config.json
 config/server_secret.json
 /core/secret/grant_secret.json
-
+/test/
 # End of Backend
 
 
@@ -220,4 +220,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/node,windows,webstorm
-/test/
+

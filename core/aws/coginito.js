@@ -41,7 +41,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 module.exports.RegisterUser = function (regist_form, onSuccessCallback, onFailureCallback) {
     var attributeList = [];
     let gender;
-    switch (regist_form.gender) {
+    switch (parseInt(regist_form.gender)) {
         case 1: {
             gender = 'male';
             break;

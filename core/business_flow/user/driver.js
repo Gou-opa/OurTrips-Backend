@@ -1,12 +1,12 @@
-const UserManager = require('../../core/mysql/driver');
-const utils = require('../../core/utils/utils');
-const VehicleManager = require('../../core/mysql/vehicle');
-const LicenceManager = require('../../core/mysql/licence');
+const UserManager = require('../../mysql/driver');
+const utils = require('../../utils/utils');
+const VehicleManager = require('../../mysql/vehicle');
+const LicenceManager = require('../../mysql/licence');
 
 
 module.exports.register = function (user_info, req, res) {
     let register_form = req.body;
-    register_form.id = user_info.info.sub;
+    register_form.id = user_info.info.username;
     UserManager.register(register_form,
         function () {
             res.status(200).json({"message": "Ok"})
@@ -17,10 +17,42 @@ module.exports.register = function (user_info, req, res) {
         }
     )
 };
+module.exports.on_vehicle = function (user_info, req, res) {
+    let vehicle_id = req.body.vehicle;
+    let driver_id = user_info.username;
+    UserManager.on_vehicle(
+        {vehicle_id: vehicle_id, id: driver_id},
+        function () {
+            res.status(200).json({"message": "Ok"})
+        },
+        function (err) {
+            utils.identify("Regist driver error", [register_form, err]);
+            res.status(500).json({ "Error": err.message});
+        }
+    )
+};
+
+module.exports.use_own_vehicle = function (user_info, req, res) {
+    let {trip, vehicle} = req.body;
+    driver_id = user_info.username;
+    UserManager.use_own_vehicle(
+        {trip_id: trip, vehicle_id: vehicle, driver_id: driver_id},
+        function () {
+            res.status(200).json({"message": "hosted"});
+        },
+        function(){
+            res.status(404).json({ "Error": "Not found trip or vehicle"});
+        },
+        function (err) {
+            utils.identify("Regist host trip error", err);
+            res.status(500).json({ "Error": err.message});
+        }
+    )
+};
 
 module.exports.Fetch = function(user_info, req, res) {
     let {max, type, filter} = req.body;
-    let driver_id = user_info.info.sub;
+    let driver_id = user_info.info.username;
     const doFilter = function (result) {
         if(filter && filter.length){
             result.forEach(function (value, index, array) {
@@ -39,7 +71,7 @@ module.exports.Fetch = function(user_info, req, res) {
     };
     const onError = function (err) {
         utils.identify("fetch err", err);
-        res.status(200).json({ Error: err});
+        res.status(500).json({ Error: err});
     };
     switch (type) {
         case 'vehicle': {
@@ -58,6 +90,14 @@ module.exports.Fetch = function(user_info, req, res) {
             );
             break;
         }
+        case 'invitation': {
+            VehicleManager.fetch_invitation( // khong su dung max
+                driver_id,
+                sendReult,
+                onError
+            );
+            break;
+        }
         default: {
             res.status(400).json({ message: "Mismatch type"});
         }
@@ -70,7 +110,7 @@ module.exports.add = function (user_info, req, res) {
     if(register_form.hasOwnProperty(type)){
         switch (type) {
             case "vehicle" : {
-                VehicleManager.store({driver_id: user_info.info.sub, vehicle: register_form[type]},
+                VehicleManager.store({driver_id: user_info.info.username, vehicle: register_form[type]},
                     function () {
                         res.status(200).json({"message": "Ok, waiting for approval."})
                     },
@@ -82,7 +122,7 @@ module.exports.add = function (user_info, req, res) {
                 break;
             }
             case "licence" : {
-                LicenceManager.store({driver_id: user_info.info.sub, licence: register_form[type]},
+                LicenceManager.store({driver_id: user_info.info.username, licence: register_form[type]},
                     function () {
                         res.status(200).json({"message": "Ok, waiting for approval."})
                     },
@@ -94,7 +134,7 @@ module.exports.add = function (user_info, req, res) {
                 break;
             }
             case 'serve_policy' : {
-                VehicleManager.serve({driver_id: user_info.info.sub, serve: register_form[type]},
+                VehicleManager.serve({driver_id: user_info.info.username, serve: register_form[type]},
                     function () {
                         res.status(200).json({ "message": "Ok"})
                     },
@@ -119,7 +159,7 @@ module.exports.add = function (user_info, req, res) {
 
 module.exports.delete = function (user_info, req, res) {
     let {id, type} = req.params;
-    let user_id = user_info.info.sub;
+    let user_id = user_info.info.username;
     switch (type) {
         case "vehicle": {
             VehicleManager.delete(
@@ -159,46 +199,3 @@ module.exports.delete = function (user_info, req, res) {
     }
 
 };
-module.exports.get = function (user_info, req, res) {
-    let {type, id} = req.body;
-    let user_id = user_info.info.sub;
-    switch (type) {
-        case "vehicle": {
-            VehicleManager.get(
-                {driver_id: user_id, id: id},
-                function (result) {
-                    res.status(200).json({ result: result})
-                },
-                function () {
-                    res.status(403).json({"Error": type + " id not found"});
-                },
-                function (err) {
-                    utils.identify("delete vehicle error", err);
-                    res.status(500).json({"Error": err.message});
-                }
-            );
-            break;
-        }
-        case "licence": {
-            LicenceManager.get(
-                {driver_id: user_id, id: id},
-                function (result) {
-                    res.status(200).json({ result: result})
-                },
-                function () {
-                    res.status(403).json({"Error": type + " id not found"});
-                },
-                function (err) {
-                    utils.identify("delete licence error", err);
-                    res.status(500).json({ "Error": err.message});
-                }
-            );
-            break;
-        }
-        default: {
-            res.status(400).json({message: "Mismatch type"});
-        }
-    }
-
-};
-

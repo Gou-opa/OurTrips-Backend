@@ -1,4 +1,8 @@
 const AWS = require('aws-sdk');
-AWS.config.region = "ap-southeast-1";
+const config = require('./config');
+
+AWS.config.accessKeyId = config.accessKeyId;
+AWS.config.secretAccessKey = config.secretAccessKey;
+AWS.config.region = config.region;
 
 module.exports = AWS;
