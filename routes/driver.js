@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Account = require('../core/business_flow/user/account');
 var driver = require('../core/business_flow/user/driver');
-var licence = require('../core/business_flow/licence/licence');
-var vehicle = require('../core/business_flow/vehicle/vehicle');
+
 const Trip = require('../core/business_flow/map/trip');
 const data = require('./data/city.json');
 
